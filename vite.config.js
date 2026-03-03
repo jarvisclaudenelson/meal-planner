@@ -8,9 +8,9 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       manifest: {
-        name: 'Meal Planner',
-        short_name: 'Meals',
-        description: 'Family meal planning made simple',
+        name: 'Plaited',
+        short_name: 'Plaited',
+        description: 'AI-powered family meal planning',
         theme_color: '#10b981',
         background_color: '#ffffff',
         display: 'standalone',
