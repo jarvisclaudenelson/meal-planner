@@ -3,7 +3,8 @@ import { useSearchParams, useNavigate } from 'react-router-dom'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { useMealPlan } from '../hooks/useMealPlan'
 import { useRecipes } from '../hooks/useRecipes'
-import { DAYS, getWeekStart, formatDate, addDays, isToday } from '../lib/dates'
+import { useWeekStartDay } from '../hooks/useWeekStartDay'
+import { getOrderedDays, getWeekStart, formatDate, addDays, isToday } from '../lib/dates'
 import MealSlot from '../components/MealSlot'
 import RecipePicker from '../components/RecipePicker'
 import LoadingSpinner from '../components/LoadingSpinner'
@@ -12,10 +13,12 @@ export default function Plan() {
   const navigate = useNavigate()
   const [searchParams, setSearchParams] = useSearchParams()
   const [picker, setPicker] = useState(null) // { day, slot } | null
+  const [startDay] = useWeekStartDay()
+  const days = getOrderedDays(startDay)
 
   // Week from URL param, default to current week
   const weekParam = searchParams.get('week')
-  const weekStart = weekParam ?? formatDate(getWeekStart())
+  const weekStart = weekParam ?? formatDate(getWeekStart(new Date(), startDay))
 
   function setWeek(date) {
     setSearchParams({ week: formatDate(date) })
@@ -66,7 +69,7 @@ export default function Plan() {
         <LoadingSpinner />
       ) : (
         <div className="p-4 space-y-3">
-          {DAYS.map((day, i) => {
+          {days.map((day, i) => {
             const date = addDays(new Date(weekStart), i)
             const today = isToday(date)
             const dinner = plan[`${day}-dinner`]
