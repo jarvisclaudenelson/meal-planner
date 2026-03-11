@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom'
 import { ChevronLeft, ChevronRight, RefreshCw, Clipboard, Plus, Trash2, Check } from 'lucide-react'
 import { useMealPlan } from '../hooks/useMealPlan'
 import { useShoppingList, SECTION_ORDER } from '../hooks/useShoppingList'
+import { useWeekStartDay } from '../hooks/useWeekStartDay'
 import { getWeekStart, formatDate, addDays } from '../lib/dates'
 import LoadingSpinner from '../components/LoadingSpinner'
 
@@ -11,9 +12,10 @@ export default function Shopping() {
   const [customInput, setCustomInput] = useState('')
   const [generating, setGenerating] = useState(false)
   const [copied, setCopied] = useState(false)
+  const [startDay] = useWeekStartDay()
 
   const weekParam = searchParams.get('week')
-  const weekStart = weekParam ?? formatDate(getWeekStart())
+  const weekStart = weekParam ?? formatDate(getWeekStart(new Date(), startDay))
 
   function setWeek(date) {
     setSearchParams({ week: formatDate(date) })

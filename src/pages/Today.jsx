@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Clock, Settings, ChevronRight } from 'lucide-react'
 import { useMealPlan } from '../hooks/useMealPlan'
-import { getWeekStart, formatDate, getDayOfWeek, addDays, DAYS } from '../lib/dates'
+import { useWeekStartDay } from '../hooks/useWeekStartDay'
+import { getWeekStart, formatDate, getDayOfWeek } from '../lib/dates'
 
 const DEFAULT_DINNER_TIME = '18:30' // 6:30 PM
 
@@ -26,9 +27,16 @@ function formatTime12(time24) {
   return `${hour12}:${String(m).padStart(2, '0')} ${period}`
 }
 
+const WEEK_START_OPTIONS = [
+  { value: 'saturday', label: 'Saturday' },
+  { value: 'sunday', label: 'Sunday' },
+  { value: 'monday', label: 'Monday' },
+]
+
 export default function Today() {
   const navigate = useNavigate()
-  const weekStart = formatDate(getWeekStart())
+  const [startDay, setStartDay] = useWeekStartDay()
+  const weekStart = formatDate(getWeekStart(new Date(), startDay))
   const today = getDayOfWeek(new Date())
   const { plan, loading } = useMealPlan(weekStart)
 
@@ -74,16 +82,32 @@ export default function Today() {
 
         {/* Settings panel */}
         {showSettings && (
-          <div className="mt-4 p-3 bg-emerald-700/60 rounded-xl">
-            <label className="text-sm font-medium text-emerald-100 block mb-1">
-              Target dinner time
-            </label>
-            <input
-              type="time"
-              value={dinnerTime}
-              onChange={(e) => setDinnerTime(e.target.value)}
-              className="w-full px-3 py-2 bg-emerald-800/60 text-white rounded-lg text-sm outline-none focus:ring-2 focus:ring-emerald-300"
-            />
+          <div className="mt-4 p-3 bg-emerald-700/60 rounded-xl space-y-3">
+            <div>
+              <label className="text-sm font-medium text-emerald-100 block mb-1">
+                Target dinner time
+              </label>
+              <input
+                type="time"
+                value={dinnerTime}
+                onChange={(e) => setDinnerTime(e.target.value)}
+                className="w-full px-3 py-2 bg-emerald-800/60 text-white rounded-lg text-sm outline-none focus:ring-2 focus:ring-emerald-300"
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium text-emerald-100 block mb-1">
+                Week starts on
+              </label>
+              <select
+                value={startDay}
+                onChange={(e) => setStartDay(e.target.value)}
+                className="w-full px-3 py-2 bg-emerald-800/60 text-white rounded-lg text-sm outline-none focus:ring-2 focus:ring-emerald-300"
+              >
+                {WEEK_START_OPTIONS.map((opt) => (
+                  <option key={opt.value} value={opt.value}>{opt.label}</option>
+                ))}
+              </select>
+            </div>
           </div>
         )}
       </div>
