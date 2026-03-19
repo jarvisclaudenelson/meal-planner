@@ -16,12 +16,14 @@ export function getOrderedDays(startDay = 'saturday') {
 /** Returns the start of the week containing `date`, where the week begins on `startDay`. */
 export function getWeekStart(date = new Date(), startDay = 'saturday') {
   const d = new Date(date)
-  const jsDay = d.getDay() // 0=Sun … 6=Sat
-  const startJs = DAY_TO_JS[startDay] ?? 1
+  // Fix: Convert to local date to avoid timezone shifts at end-of-day
+  const localDate = new Date(d.getFullYear(), d.getMonth(), d.getDate())
+  const jsDay = localDate.getDay() // 0=Sun … 6=Sat
+  const startJs = DAY_TO_JS[startDay] ?? 6
   const diff = ((jsDay - startJs + 7) % 7)
-  d.setDate(d.getDate() - diff)
-  d.setHours(0, 0, 0, 0)
-  return d
+  localDate.setDate(localDate.getDate() - diff)
+  localDate.setHours(0, 0, 0, 0)
+  return localDate
 }
 
 /** Formats a Date (or date string) as `YYYY-MM-DD` or `MMM D`. */
