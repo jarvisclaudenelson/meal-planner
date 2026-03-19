@@ -25,8 +25,8 @@ export default function Shopping() {
   const { items, loading, generateList, toggleItem, addCustomItem, removeItem, resetList, exportList } =
     useShoppingList(weekStart, plan)
 
-  const weekEnd = addDays(new Date(weekStart), 6)
-  const rangeLabel = `${formatDate(new Date(weekStart), 'MMM D')} – ${formatDate(weekEnd, 'MMM D')}`
+  const weekEnd = addDays(weekStart, 6)
+  const rangeLabel = `${formatDate(weekStart, 'MMM D')} – ${formatDate(weekEnd, 'MMM D')}`
 
   async function handleGenerate() {
     setGenerating(true)
@@ -75,14 +75,14 @@ export default function Shopping() {
           {/* Week navigation */}
           <div className="flex items-center justify-between mt-2">
             <button
-              onClick={() => setWeek(addDays(new Date(weekStart), -7))}
+              onClick={() => setWeek(addDays(weekStart, -7))}
               className="p-1.5 rounded-lg hover:bg-gray-100"
             >
               <ChevronLeft size={18} className="text-gray-600" />
             </button>
             <span className="text-sm font-medium text-gray-600">{rangeLabel}</span>
             <button
-              onClick={() => setWeek(addDays(new Date(weekStart), 7))}
+              onClick={() => setWeek(addDays(weekStart, 7))}
               className="p-1.5 rounded-lg hover:bg-gray-100"
             >
               <ChevronRight size={18} className="text-gray-600" />

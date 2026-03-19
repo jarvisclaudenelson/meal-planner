@@ -25,11 +25,11 @@ export default function Plan() {
   }
 
   function prevWeek() {
-    setWeek(addDays(new Date(weekStart), -7))
+    setWeek(addDays(weekStart, -7))
   }
 
   function nextWeek() {
-    setWeek(addDays(new Date(weekStart), 7))
+    setWeek(addDays(weekStart, 7))
   }
 
   const { plan, loading, setMeal, clearMeal } = useMealPlan(weekStart)
@@ -42,8 +42,8 @@ export default function Plan() {
   }
 
   // Week range label: "Feb 24 – Mar 2"
-  const weekEnd = addDays(new Date(weekStart), 6)
-  const rangeLabel = `${formatDate(new Date(weekStart), 'MMM D')} – ${formatDate(weekEnd, 'MMM D')}`
+  const weekEnd = addDays(weekStart, 6)
+  const rangeLabel = `${formatDate(weekStart, 'MMM D')} – ${formatDate(weekEnd, 'MMM D')}`
 
   return (
     <div className="min-h-screen bg-gray-50 pb-4">
@@ -70,7 +70,7 @@ export default function Plan() {
       ) : (
         <div className="p-4 space-y-3">
           {days.map((day, i) => {
-            const date = addDays(new Date(weekStart), i)
+            const date = addDays(weekStart, i)
             const today = isToday(date)
             const slotData = plan[`${day}-dinner`] ?? { main: null, side: null }
             const dinner = slotData.main
