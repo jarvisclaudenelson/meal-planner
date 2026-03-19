@@ -51,7 +51,15 @@ export function useShoppingList(weekStart, plan) {
 
   /** Generate list from current week's meal plan. Merges ingredients by item+unit key. */
   const generateList = useCallback(async () => {
-    const recipes = Object.values(plan ?? {}).filter(Boolean)
+    // Plan values are now { main: recipeObj, side: recipeObj }
+    const planItems = Object.values(plan ?? {}).filter(Boolean)
+    const recipes = []
+    
+    for (const item of planItems) {
+      if (item.main) recipes.push(item.main)
+      if (item.side) recipes.push(item.side)
+    }
+
     const consolidated = {}
 
     for (const recipe of recipes) {
@@ -59,12 +67,12 @@ export function useShoppingList(weekStart, plan) {
       for (const ing of recipe.ingredients) {
         const key = `${ing.item?.toLowerCase().trim()}||${(ing.unit ?? '').toLowerCase().trim()}`
         if (consolidated[key]) {
-          consolidated[key].qty = (consolidated[key].qty ?? 0) + (ing.qty ?? 0)
+          consolidated[key].qty = (consolidated[key].qty ?? 0) + (parseFloat(ing.qty) || 0)
         } else {
           consolidated[key] = {
             id: `gen-${key}-${Math.random().toString(36).slice(2)}`,
             name: ing.item,
-            qty: ing.qty ?? 0,
+            qty: parseFloat(ing.qty) || 0,
             unit: ing.unit ?? '',
             section: ing.section ?? 'Other',
             checked: false,

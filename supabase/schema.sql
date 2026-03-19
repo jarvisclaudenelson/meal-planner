@@ -37,6 +37,7 @@ CREATE TABLE IF NOT EXISTS meal_plans (
   day text NOT NULL CHECK (day IN ('monday','tuesday','wednesday','thursday','friday','saturday','sunday')),
   slot text NOT NULL CHECK (slot IN ('dinner','lunch')),
   recipe_id uuid REFERENCES recipes(id) ON DELETE SET NULL,
+  side_id uuid REFERENCES recipes(id) ON DELETE SET NULL, -- Added: support for veggie side dishes
   created_at timestamptz NOT NULL DEFAULT now(),
   UNIQUE(week_start, day, slot)
 );

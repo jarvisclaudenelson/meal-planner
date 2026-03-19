@@ -12,7 +12,7 @@ import LoadingSpinner from '../components/LoadingSpinner'
 export default function Plan() {
   const navigate = useNavigate()
   const [searchParams, setSearchParams] = useSearchParams()
-  const [picker, setPicker] = useState(null) // { day, slot } | null
+  const [picker, setPicker] = useState(null) // { day, slot, type } | null
   const [startDay] = useWeekStartDay()
   const days = getOrderedDays(startDay)
 
@@ -37,7 +37,7 @@ export default function Plan() {
 
   async function handleSelect(recipe) {
     if (!picker) return
-    await setMeal(picker.day, picker.slot, recipe.id)
+    await setMeal(picker.day, picker.slot, recipe.id, picker.type)
     setPicker(null)
   }
 
@@ -72,8 +72,11 @@ export default function Plan() {
           {days.map((day, i) => {
             const date = addDays(new Date(weekStart), i)
             const today = isToday(date)
-            const dinner = plan[`${day}-dinner`]
-            const lunch = plan[`${day}-lunch`]
+            const slotData = plan[`${day}-dinner`] ?? { main: null, side: null }
+            const dinner = slotData.main
+            const side = slotData.side
+            const lunchData = plan[`${day}-lunch`] ?? { main: null, side: null }
+            const lunch = lunchData.main
 
             return (
               <div
@@ -93,29 +96,43 @@ export default function Plan() {
                   )}
                 </div>
 
-                {/* Dinner slot (primary) */}
-                <MealSlot
-                  recipe={dinner}
-                  label="Dinner"
-                  primary
-                  onTap={() => {
-                    if (dinner) navigate(`/recipes/${dinner.id}`)
-                    else setPicker({ day, slot: 'dinner' })
-                  }}
-                  onClear={() => clearMeal(day, 'dinner')}
-                />
+                <div className="space-y-2">
+                  {/* Dinner Main slot (primary) */}
+                  <MealSlot
+                    recipe={dinner}
+                    label="Dinner Main"
+                    primary
+                    onTap={() => {
+                      if (dinner) navigate(`/recipes/${dinner.id}`)
+                      else setPicker({ day, slot: 'dinner', type: 'main' })
+                    }}
+                    onClear={() => clearMeal(day, 'dinner', 'main')}
+                  />
 
-                {/* Lunch slot (secondary) */}
-                <div className="mt-2">
+                  {/* Dinner Side slot (secondary) */}
+                  <MealSlot
+                    recipe={side}
+                    label="Veggie Side"
+                    primary={false}
+                    onTap={() => {
+                      if (side) navigate(`/recipes/${side.id}`)
+                      else setPicker({ day, slot: 'dinner', type: 'side' })
+                    }}
+                    onClear={() => clearMeal(day, 'dinner', 'side')}
+                  />
+                </div>
+
+                {/* Lunch slot (tertiary) */}
+                <div className="mt-4 pt-3 border-t border-gray-50">
                   <MealSlot
                     recipe={lunch}
                     label="Lunch"
                     primary={false}
                     onTap={() => {
                       if (lunch) navigate(`/recipes/${lunch.id}`)
-                      else setPicker({ day, slot: 'lunch' })
+                      else setPicker({ day, slot: 'lunch', type: 'main' })
                     }}
-                    onClear={() => clearMeal(day, 'lunch')}
+                    onClear={() => clearMeal(day, 'lunch', 'main')}
                   />
                 </div>
               </div>
@@ -129,6 +146,7 @@ export default function Plan() {
         onClose={() => setPicker(null)}
         onSelect={handleSelect}
         recipes={allRecipes}
+        filter={picker?.type === 'side' ? 'side' : null}
       />
     </div>
   )

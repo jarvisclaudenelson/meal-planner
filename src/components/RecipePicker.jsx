@@ -9,7 +9,7 @@ import { Search, X, Star, Clock } from 'lucide-react'
  *   onSelect   — (recipe) => void
  *   recipes    — array of recipe objects
  */
-export default function RecipePicker({ open, onClose, onSelect, recipes = [] }) {
+export default function RecipePicker({ open, onClose, onSelect, recipes = [], filter }) {
   const [search, setSearch] = useState('')
   const inputRef = useRef(null)
 
@@ -30,6 +30,9 @@ export default function RecipePicker({ open, onClose, onSelect, recipes = [] }) 
   }, [open, onClose])
 
   const filtered = recipes.filter((r) => {
+    // If filter is provided (e.g. 'side'), ensure recipe has that tag
+    if (filter && !r.tags?.some(t => t.toLowerCase() === filter.toLowerCase())) return false
+
     if (!search) return true
     const q = search.toLowerCase()
     return r.name.toLowerCase().includes(q) || r.tags?.some((t) => t.toLowerCase().includes(q))

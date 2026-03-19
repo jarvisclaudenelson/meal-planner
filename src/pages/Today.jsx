@@ -49,8 +49,11 @@ export default function Today() {
     localStorage.setItem('dinnerTime', dinnerTime)
   }, [dinnerTime])
 
-  const dinner = plan[`${today}-dinner`]
-  const lunch = plan[`${today}-lunch`]
+  const slotData = plan[`${today}-dinner`] ?? { main: null, side: null }
+  const dinner = slotData.main
+  const side = slotData.side
+  const lunchData = plan[`${today}-lunch`] ?? { main: null, side: null }
+  const lunch = lunchData.main
 
   const startTime = dinner?.total_time_min
     ? calcStartTime(dinnerTime, dinner.total_time_min)
@@ -128,13 +131,24 @@ export default function Today() {
         )}
 
         {/* Dinner card */}
-        <MealCard
-          label="Dinner"
-          meal={dinner}
-          loading={loading}
-          onTap={dinner ? () => navigate(`/recipes/${dinner.id}`) : () => navigate('/plan')}
-          primary
-        />
+        <div className="space-y-2">
+          <MealCard
+            label="Dinner Main"
+            meal={dinner}
+            loading={loading}
+            onTap={dinner ? () => navigate(`/recipes/${dinner.id}`) : () => navigate('/plan')}
+            primary
+          />
+          {side && (
+            <MealCard
+              label="Veggie Side"
+              meal={side}
+              loading={loading}
+              onTap={() => navigate(`/recipes/${side.id}`)}
+              primary={false}
+            />
+          )}
+        </div>
 
         {/* Lunch card */}
         <MealCard
