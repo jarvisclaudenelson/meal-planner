@@ -20,7 +20,7 @@ export function useMealPlan(weekStart) {
     setError(null)
     const { data, error } = await supabase
       .from('meal_plans')
-      .select('day, slot, recipe:recipes!meal_plans_recipe_id_fkey(*), side:recipes!meal_plans_side_id_fkey(*)')
+      .select('day, slot, recipe_id, side_id, main:recipes!meal_plans_recipe_id_fkey(*), side:recipes!meal_plans_side_id_fkey(*)')
       .eq('week_start', weekStart)
 
     if (error) {
@@ -29,10 +29,11 @@ export function useMealPlan(weekStart) {
       const map = {}
       for (const row of data ?? []) {
         map[`${row.day}-${row.slot}`] = {
-          main: row.recipe,
+          main: row.main,
           side: row.side
         }
       }
+      console.log('useMealPlan fetch result:', map)
       setPlan(map)
     }
     setLoading(false)
