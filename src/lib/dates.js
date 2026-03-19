@@ -26,9 +26,19 @@ export function getWeekStart(date = new Date(), startDay = 'saturday') {
   return localDate
 }
 
+/** Adds `n` days to a Date and returns the new Date. */
+export function addDays(date, n) {
+  const d = new Date(date)
+  // Ensure we're working with a pure local date to prevent timezone shifts during addition
+  const localDate = new Date(d.getFullYear(), d.getMonth(), d.getDate())
+  localDate.setDate(localDate.getDate() + n)
+  return localDate
+}
+
 /** Formats a Date (or date string) as `YYYY-MM-DD` or `MMM D`. */
 export function formatDate(date, format = 'YYYY-MM-DD') {
   const d = new Date(date)
+  // Ensure we extract local components regardless of how the date was constructed
   const yyyy = d.getFullYear()
   const mm = String(d.getMonth() + 1).padStart(2, '0')
   const dd = String(d.getDate()).padStart(2, '0')
@@ -38,13 +48,6 @@ export function formatDate(date, format = 'YYYY-MM-DD') {
     return `${months[d.getMonth()]} ${d.getDate()}`
   }
   return `${yyyy}-${mm}-${dd}`
-}
-
-/** Adds `n` days to a Date and returns the new Date. */
-export function addDays(date, n) {
-  const d = new Date(date)
-  d.setDate(d.getDate() + n)
-  return d
 }
 
 /** Returns the lowercase day name for a Date (e.g. 'monday'). */
