@@ -28,17 +28,29 @@ export function getWeekStart(date = new Date(), startDay = 'saturday') {
 
 /** Adds `n` days to a Date and returns the new Date. */
 export function addDays(date, n) {
-  const d = new Date(date)
-  // Ensure we're working with a pure local date to prevent timezone shifts during addition
-  const localDate = new Date(d.getFullYear(), d.getMonth(), d.getDate())
-  localDate.setDate(localDate.getDate() + n)
-  return localDate
+  const d = parseLocalDate(date)
+  d.setDate(d.getDate() + n)
+  return d
+}
+
+/**
+ * Parse a date string or Date object into a local-timezone Date.
+ * Handles YYYY-MM-DD strings (which JS parses as UTC) by treating them as local.
+ */
+export function parseLocalDate(date) {
+  if (typeof date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(date)) {
+    // YYYY-MM-DD string: parse as local, not UTC
+    const [y, m, d] = date.split('-').map(Number)
+    return new Date(y, m - 1, d)
+  }
+  const dt = new Date(date)
+  // Strip time to get pure local date
+  return new Date(dt.getFullYear(), dt.getMonth(), dt.getDate())
 }
 
 /** Formats a Date (or date string) as `YYYY-MM-DD` or `MMM D`. */
 export function formatDate(date, format = 'YYYY-MM-DD') {
-  const d = new Date(date)
-  // Ensure we extract local components regardless of how the date was constructed
+  const d = parseLocalDate(date)
   const yyyy = d.getFullYear()
   const mm = String(d.getMonth() + 1).padStart(2, '0')
   const dd = String(d.getDate()).padStart(2, '0')
@@ -52,13 +64,13 @@ export function formatDate(date, format = 'YYYY-MM-DD') {
 
 /** Returns the lowercase day name for a Date (e.g. 'monday'). */
 export function getDayOfWeek(date) {
-  return ALL_DAYS[new Date(date).getDay()]
+  return ALL_DAYS[parseLocalDate(date).getDay()]
 }
 
 /** Returns true if a Date is today (local time). */
 export function isToday(date) {
   const today = new Date()
-  const d = new Date(date)
+  const d = parseLocalDate(date)
   return (
     d.getDate() === today.getDate() &&
     d.getMonth() === today.getMonth() &&
