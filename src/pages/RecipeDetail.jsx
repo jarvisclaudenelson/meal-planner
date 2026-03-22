@@ -62,9 +62,24 @@ export default function RecipeDetail() {
   const ingredients = recipe.ingredients ?? []
   const showProteinTips = (recipe.protein_ratio ?? 0) < 8
 
+  // Find ingredients mentioned in a step
+  function getIngredientsForStep(stepText) {
+    if (!stepText || !ingredients.length) return []
+    const stepLower = stepText.toLowerCase()
+    return ingredients.filter((ing) => {
+      if (!ing.item) return false
+      // Match the ingredient name or key words from it
+      const itemLower = ing.item.toLowerCase()
+      const words = itemLower.split(/\s+/)
+      // Check if any significant word (3+ chars) appears in the step
+      return words.some((word) => word.length >= 3 && stepLower.includes(word))
+    })
+  }
+
   // ── Cooking Mode ──────────────────────────────────────────────
   if (cookingMode) {
     const step = steps[stepIndex]
+    const stepIngredients = getIngredientsForStep(step)
     return (
       <div className="fixed inset-0 z-50 bg-gray-900 text-white flex flex-col">
         <div className="flex items-center justify-between p-4 border-b border-gray-700">
@@ -77,11 +92,31 @@ export default function RecipeDetail() {
           </button>
         </div>
 
-        <div className="flex-1 flex flex-col items-center justify-center px-6 text-center">
+        <div className="flex-1 flex flex-col items-center justify-center px-6 text-center overflow-y-auto">
           <p className="text-emerald-400 text-sm font-medium mb-4">
             Step {stepIndex + 1} of {steps.length}
           </p>
           <p className="text-2xl font-medium leading-relaxed">{step}</p>
+          
+          {/* Ingredients used in this step */}
+          {stepIngredients.length > 0 && (
+            <div className="mt-6 w-full max-w-sm">
+              <p className="text-gray-400 text-xs uppercase tracking-wide mb-2">Ingredients for this step</p>
+              <div className="flex flex-wrap justify-center gap-2">
+                {stepIngredients.map((ing, i) => (
+                  <span
+                    key={i}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-900/50 border border-emerald-700 rounded-full text-sm"
+                  >
+                    <span className="text-emerald-300 font-medium">
+                      {ing.qty > 0 ? `${ing.qty} ${ing.unit}` : ing.unit}
+                    </span>
+                    <span className="text-gray-300">{ing.item}</span>
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="flex items-center justify-between p-6 border-t border-gray-700">
