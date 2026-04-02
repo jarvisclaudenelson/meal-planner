@@ -81,35 +81,37 @@ export function useShoppingList(weekStart) {
     const [mealsRes, sidesRes] = await Promise.all([
       supabase
         .from('meal_plans')
-        .select('recipe:recipes!meal_plans_recipe_id_fkey(*)')
+        .select('multiplier, recipe:recipes!meal_plans_recipe_id_fkey(*)')
         .eq('week_start', weekStart),
       supabase
         .from('meal_sides')
-        .select('recipe:recipes!meal_sides_recipe_id_fkey(*)')
+        .select('multiplier, recipe:recipes!meal_sides_recipe_id_fkey(*)')
         .eq('week_start', weekStart),
     ])
 
-    const recipes = []
+    // Each entry is { recipe, multiplier } so quantities scale correctly
+    const entries = []
     for (const row of mealsRes.data ?? []) {
-      if (row.recipe) recipes.push(row.recipe)
+      if (row.recipe) entries.push({ recipe: row.recipe, multiplier: row.multiplier ?? 1 })
     }
     for (const row of sidesRes.data ?? []) {
-      if (row.recipe) recipes.push(row.recipe)
+      if (row.recipe) entries.push({ recipe: row.recipe, multiplier: row.multiplier ?? 1 })
     }
 
     const consolidated = {}
 
-    for (const recipe of recipes) {
+    for (const { recipe, multiplier } of entries) {
       if (!Array.isArray(recipe.ingredients)) continue
       for (const ing of recipe.ingredients) {
         const key = `${ing.item?.toLowerCase().trim()}||${(ing.unit ?? '').toLowerCase().trim()}`
+        const scaledQty = (parseFloat(ing.qty) || 0) * multiplier
         if (consolidated[key]) {
-          consolidated[key].qty = (consolidated[key].qty ?? 0) + (parseFloat(ing.qty) || 0)
+          consolidated[key].qty = (consolidated[key].qty ?? 0) + scaledQty
         } else {
           consolidated[key] = {
             id: `gen-${key}-${Math.random().toString(36).slice(2)}`,
             name: ing.item,
-            qty: parseFloat(ing.qty) || 0,
+            qty: scaledQty,
             unit: ing.unit ?? '',
             section: normalizeSection(ing.section),
             checked: false,

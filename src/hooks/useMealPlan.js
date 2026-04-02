@@ -57,11 +57,11 @@ export function useMealPlan(weekStart) {
     const [mealsRes, sidesRes] = await Promise.all([
       supabase
         .from('meal_plans')
-        .select('position, recipe:recipes!meal_plans_recipe_id_fkey(*)')
+        .select('position, multiplier, recipe:recipes!meal_plans_recipe_id_fkey(*)')
         .eq('week_start', weekStart),
       supabase
         .from('meal_sides')
-        .select('position, recipe:recipes!meal_sides_recipe_id_fkey(*)')
+        .select('position, multiplier, recipe:recipes!meal_sides_recipe_id_fkey(*)')
         .eq('week_start', weekStart),
     ])
 
@@ -70,11 +70,11 @@ export function useMealPlan(weekStart) {
     } else {
       const map = {}
       for (const row of mealsRes.data ?? []) {
-        map[row.position] = { recipe: row.recipe, sides: [] }
+        map[row.position] = { recipe: row.recipe, multiplier: row.multiplier ?? 1, sides: [] }
       }
       for (const row of sidesRes.data ?? []) {
-        if (!map[row.position]) map[row.position] = { recipe: null, sides: [] }
-        map[row.position].sides.push(row.recipe)
+        if (!map[row.position]) map[row.position] = { recipe: null, multiplier: 1, sides: [] }
+        map[row.position].sides.push({ ...row.recipe, multiplier: row.multiplier ?? 1 })
       }
       setPlan(map)
     }
@@ -136,6 +136,21 @@ export function useMealPlan(weekStart) {
     return error
   }, [weekStart])
 
+  const setMultiplier = useCallback(async (position, multiplier) => {
+    const { error } = await supabase
+      .from('meal_plans')
+      .update({ multiplier })
+      .eq('week_start', weekStart)
+      .eq('position', position)
+    if (!error) {
+      setPlan((prev) => ({
+        ...prev,
+        [position]: { ...prev[position], multiplier }
+      }))
+    }
+    return error
+  }, [weekStart])
+
   const removeSide = useCallback(async (position, recipeId) => {
     const { error } = await supabase
       .from('meal_sides')
@@ -155,5 +170,5 @@ export function useMealPlan(weekStart) {
     return error
   }, [weekStart])
 
-  return { plan, loading, error, setMeal, clearMeal, addSide, removeSide, refetch: fetchPlan }
+  return { plan, loading, error, setMeal, clearMeal, setMultiplier, addSide, removeSide, refetch: fetchPlan }
 }

@@ -23,7 +23,7 @@ export default function Meals() {
 
   const positions = buildPositions(config)
 
-  const { plan, loading, setMeal, clearMeal } = useMealPlan(weekStart)
+  const { plan, loading, setMeal, clearMeal, setMultiplier } = useMealPlan(weekStart)
   const { allRecipes } = useRecipes()
 
   async function handleSelect(recipe) {
@@ -113,8 +113,9 @@ export default function Meals() {
       ) : (
         <div className="p-4 space-y-3">
           {positions.map((pos) => {
-            const slot = plan[pos.key] ?? { recipe: null, sides: [] }
+            const slot = plan[pos.key] ?? { recipe: null, multiplier: 1, sides: [] }
             const recipe = slot.recipe
+            const multiplier = slot.multiplier ?? 1
             const colors = getColorForPosition(positions, pos.key)
             const Icon = TYPE_ICONS[pos.type]
             const sideCount = slot.sides?.length ?? 0
@@ -161,6 +162,17 @@ export default function Meals() {
                         </div>
                       </div>
                       <div className="flex items-center gap-1">
+                        <button
+                          onClick={() => setMultiplier(pos.key, multiplier >= 3 ? 1 : multiplier + 1)}
+                          className={`px-2 py-1 rounded-lg text-xs font-bold transition-colors ${
+                            multiplier > 1
+                              ? 'bg-emerald-900/50 text-emerald-300'
+                              : 'hover:bg-gray-700 text-gray-500 hover:text-gray-300'
+                          }`}
+                          title="Multiply servings for shopping list"
+                        >
+                          {multiplier}x
+                        </button>
                         <button
                           onClick={() => setPicker({ position: pos.key, type: pos.type })}
                           className="p-1.5 rounded-lg hover:bg-gray-700 text-gray-500 hover:text-gray-300"
