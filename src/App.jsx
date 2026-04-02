@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import BottomNav from './components/BottomNav'
+import { WeekProvider } from './context/WeekContext'
 import Meals from './pages/Meals'
 import Sides from './pages/Sides'
 import Recipes from './pages/Recipes'
@@ -9,6 +10,7 @@ import Shopping from './pages/Shopping'
 export default function App() {
   return (
     <BrowserRouter>
+      <WeekProvider>
       <div className="flex flex-col min-h-screen">
         <main className="flex-1 pb-16">
           <Routes>
@@ -25,6 +27,7 @@ export default function App() {
         </main>
         <BottomNav />
       </div>
+      </WeekProvider>
     </BrowserRouter>
   )
 }

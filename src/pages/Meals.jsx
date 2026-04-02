@@ -4,7 +4,7 @@ import { ChevronLeft, ChevronRight, RefreshCw, Flame, Timer, Salad, X, Clock, Se
 import { useMealPlan, MEAL_TYPES, buildPositions, getColorForPosition } from '../hooks/useMealPlan'
 import { useMealConfig } from '../hooks/useMealConfig'
 import { useRecipes } from '../hooks/useRecipes'
-import { useWeekNav } from '../hooks/useWeekNav'
+import { useWeek } from '../context/WeekContext'
 import RecipePicker from '../components/RecipePicker'
 import LoadingSpinner from '../components/LoadingSpinner'
 
@@ -19,7 +19,7 @@ export default function Meals() {
   const [picker, setPicker] = useState(null)
   const [showConfig, setShowConfig] = useState(false)
   const [config, setConfig] = useMealConfig()
-  const { weekStart, weekNumber, prevWeek, nextWeek } = useWeekNav()
+  const { weekStart, weekNumber, prevWeek, nextWeek } = useWeek()
 
   const positions = buildPositions(config)
 

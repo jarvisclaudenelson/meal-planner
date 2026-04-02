@@ -4,7 +4,7 @@ import { ChevronLeft, ChevronRight, Plus, X, Clock } from 'lucide-react'
 import { useMealPlan, buildPositions, getColorForPosition } from '../hooks/useMealPlan'
 import { useMealConfig } from '../hooks/useMealConfig'
 import { useRecipes } from '../hooks/useRecipes'
-import { useWeekNav } from '../hooks/useWeekNav'
+import { useWeek } from '../context/WeekContext'
 import RecipePicker from '../components/RecipePicker'
 import LoadingSpinner from '../components/LoadingSpinner'
 
@@ -12,7 +12,7 @@ export default function Sides() {
   const navigate = useNavigate()
   const [picker, setPicker] = useState(null)
   const [config] = useMealConfig()
-  const { weekStart, weekNumber, prevWeek, nextWeek } = useWeekNav()
+  const { weekStart, weekNumber, prevWeek, nextWeek } = useWeek()
 
   const positions = buildPositions(config)
 
