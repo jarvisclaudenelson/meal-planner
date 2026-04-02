@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 
 export const SECTION_ORDER = [
@@ -50,7 +50,7 @@ export function useShoppingList(weekStart, plan) {
   }
 
   /** Generate list from current week's meal plan. Merges ingredients by item+unit key. */
-  const generateList = useCallback(async () => {
+  async function generateList() {
     const recipes = []
 
     for (const slot of Object.values(plan ?? {})) {
@@ -92,13 +92,13 @@ export function useShoppingList(weekStart, plan) {
     )
 
     await persist([...generated, ...custom])
-  }, [plan, items, weekStart])
+  }
 
-  const toggleItem = useCallback(async (id) => {
+  async function toggleItem(id) {
     await persist(items.map((i) => (i.id === id ? { ...i, checked: !i.checked } : i)))
-  }, [items])
+  }
 
-  const addCustomItem = useCallback(async (name) => {
+  async function addCustomItem(name) {
     if (!name.trim()) return
     const newItem = {
       id: `custom-${Date.now()}`,
@@ -110,17 +110,17 @@ export function useShoppingList(weekStart, plan) {
       custom: true,
     }
     await persist([...items, newItem])
-  }, [items])
+  }
 
-  const removeItem = useCallback(async (id) => {
+  async function removeItem(id) {
     await persist(items.filter((i) => i.id !== id))
-  }, [items])
+  }
 
-  const resetList = useCallback(async () => {
+  async function resetList() {
     await persist([])
-  }, [])
+  }
 
-  const exportList = useCallback(() => {
+  function exportList() {
     const sections = {}
     for (const item of items) {
       const s = item.section || 'Other'
@@ -140,7 +140,7 @@ export function useShoppingList(weekStart, plan) {
     navigator.clipboard
       .writeText(lines.join('\n').trimEnd())
       .catch(() => alert('Could not copy — try again or manually select the text.'))
-  }, [items])
+  }
 
   return {
     items,
