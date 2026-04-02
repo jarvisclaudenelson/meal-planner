@@ -21,14 +21,14 @@ export function buildPositions(config) {
 
 // Color palette — assigned per position index, stable within a config
 const COLOR_PALETTE = [
-  { bg: 'bg-blue-50', border: 'border-blue-200', text: 'text-blue-700', dot: 'bg-blue-500', ring: 'ring-blue-200' },
-  { bg: 'bg-amber-50', border: 'border-amber-200', text: 'text-amber-700', dot: 'bg-amber-500', ring: 'ring-amber-200' },
-  { bg: 'bg-rose-50', border: 'border-rose-200', text: 'text-rose-700', dot: 'bg-rose-500', ring: 'ring-rose-200' },
-  { bg: 'bg-emerald-50', border: 'border-emerald-200', text: 'text-emerald-700', dot: 'bg-emerald-500', ring: 'ring-emerald-200' },
-  { bg: 'bg-purple-50', border: 'border-purple-200', text: 'text-purple-700', dot: 'bg-purple-500', ring: 'ring-purple-200' },
-  { bg: 'bg-cyan-50', border: 'border-cyan-200', text: 'text-cyan-700', dot: 'bg-cyan-500', ring: 'ring-cyan-200' },
-  { bg: 'bg-orange-50', border: 'border-orange-200', text: 'text-orange-700', dot: 'bg-orange-500', ring: 'ring-orange-200' },
-  { bg: 'bg-pink-50', border: 'border-pink-200', text: 'text-pink-700', dot: 'bg-pink-500', ring: 'ring-pink-200' },
+  { bg: 'bg-blue-900/30', border: 'border-blue-700', text: 'text-blue-300', dot: 'bg-blue-400', ring: 'ring-blue-700' },
+  { bg: 'bg-amber-900/30', border: 'border-amber-700', text: 'text-amber-300', dot: 'bg-amber-400', ring: 'ring-amber-700' },
+  { bg: 'bg-rose-900/30', border: 'border-rose-700', text: 'text-rose-300', dot: 'bg-rose-400', ring: 'ring-rose-700' },
+  { bg: 'bg-emerald-900/30', border: 'border-emerald-700', text: 'text-emerald-300', dot: 'bg-emerald-400', ring: 'ring-emerald-700' },
+  { bg: 'bg-purple-900/30', border: 'border-purple-700', text: 'text-purple-300', dot: 'bg-purple-400', ring: 'ring-purple-700' },
+  { bg: 'bg-cyan-900/30', border: 'border-cyan-700', text: 'text-cyan-300', dot: 'bg-cyan-400', ring: 'ring-cyan-700' },
+  { bg: 'bg-orange-900/30', border: 'border-orange-700', text: 'text-orange-300', dot: 'bg-orange-400', ring: 'ring-orange-700' },
+  { bg: 'bg-pink-900/30', border: 'border-pink-700', text: 'text-pink-300', dot: 'bg-pink-400', ring: 'ring-pink-700' },
 ]
 
 export function getColorForPosition(positions, key) {

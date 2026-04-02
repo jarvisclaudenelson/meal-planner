@@ -67,9 +67,9 @@ export default function RecipeDetail() {
   if (loading) return <LoadingSpinner />
   if (error || !recipe) {
     return (
-      <div className="p-6 text-center text-red-500">
+      <div className="p-6 text-center text-red-400">
         <p className="font-medium">Recipe not found</p>
-        <button onClick={() => navigate(-1)} className="mt-4 text-sm text-emerald-600">Go back</button>
+        <button onClick={() => navigate(-1)} className="mt-4 text-sm text-emerald-400">Go back</button>
       </div>
     )
   }
@@ -113,7 +113,7 @@ export default function RecipeDetail() {
             Step {stepIndex + 1} of {steps.length}
           </p>
           <p className="text-2xl font-medium leading-relaxed">{step}</p>
-          
+
           {/* Ingredients used in this step */}
           {stepIngredients.length > 0 && (
             <div className="mt-6 w-full max-w-sm">
@@ -171,21 +171,21 @@ export default function RecipeDetail() {
 
   // ── Normal View ───────────────────────────────────────────────
   return (
-    <div className="min-h-screen bg-gray-50 pb-8">
+    <div className="min-h-screen bg-gray-900 pb-8">
       {/* Header */}
-      <div className="sticky top-0 z-10 bg-white border-b border-gray-100">
+      <div className="sticky top-0 z-10 bg-gray-800 border-b border-gray-700">
         <div className="flex items-center gap-3 px-4 py-3">
           <button
             onClick={() => navigate(-1)}
-            className="p-2 -ml-2 rounded-xl hover:bg-gray-100"
+            className="p-2 -ml-2 rounded-xl hover:bg-gray-700"
           >
-            <ArrowLeft size={20} className="text-gray-600" />
+            <ArrowLeft size={20} className="text-gray-300" />
           </button>
-          <h1 className="flex-1 font-bold text-gray-900 truncate">{recipe.name}</h1>
-          <button onClick={toggleStar} className="p-2 rounded-xl hover:bg-gray-100">
+          <h1 className="flex-1 font-bold text-gray-100 truncate">{recipe.name}</h1>
+          <button onClick={toggleStar} className="p-2 rounded-xl hover:bg-gray-700">
             <Star
               size={22}
-              className={starred ? 'fill-amber-400 text-amber-400' : 'text-gray-300'}
+              className={starred ? 'fill-amber-400 text-amber-400' : 'text-gray-600'}
             />
           </button>
         </div>
@@ -194,7 +194,7 @@ export default function RecipeDetail() {
       <div className="px-4 pt-4">
         {/* Description */}
         {recipe.description && (
-          <p className="text-gray-600 leading-relaxed">{recipe.description}</p>
+          <p className="text-gray-300 leading-relaxed">{recipe.description}</p>
         )}
 
         {/* Quick stats */}
@@ -208,7 +208,7 @@ export default function RecipeDetail() {
           {recipe.protein_g != null && (
             <StatChip
               label={`${Math.round(recipe.protein_g)}g protein / serving`}
-              className="bg-emerald-50 text-emerald-700 border-emerald-200"
+              className="bg-emerald-900/50 text-emerald-300 border-emerald-700"
             />
           )}
         </div>
@@ -217,7 +217,7 @@ export default function RecipeDetail() {
         {recipe.tags?.length > 0 && (
           <div className="flex flex-wrap gap-1.5 mt-3">
             {recipe.tags.map((tag) => (
-              <span key={tag} className="px-2.5 py-1 bg-gray-100 text-gray-600 rounded-full text-xs">
+              <span key={tag} className="px-2.5 py-1 bg-gray-700 text-gray-300 rounded-full text-xs">
                 {tag}
               </span>
             ))}
@@ -226,15 +226,15 @@ export default function RecipeDetail() {
 
         {/* Protein tips */}
         {showProteinTips && (
-          <div className="mt-4 bg-amber-50 border border-amber-200 rounded-xl p-4">
+          <div className="mt-4 bg-amber-900/30 border border-amber-700 rounded-xl p-4">
             <div className="flex items-center gap-2 mb-2">
-              <Lightbulb size={16} className="text-amber-600" />
-              <span className="font-semibold text-amber-800 text-sm">Boost the protein</span>
+              <Lightbulb size={16} className="text-amber-400" />
+              <span className="font-semibold text-amber-300 text-sm">Boost the protein</span>
             </div>
             <ul className="space-y-1">
               {PROTEIN_TIPS.map((tip) => (
-                <li key={tip} className="text-sm text-amber-700 flex items-start gap-2">
-                  <span className="mt-0.5 text-amber-500">•</span>
+                <li key={tip} className="text-sm text-amber-200/80 flex items-start gap-2">
+                  <span className="mt-0.5 text-amber-400">•</span>
                   {tip}
                 </li>
               ))}
@@ -255,7 +255,7 @@ export default function RecipeDetail() {
         {/* Delete */}
         <button
           onClick={() => setShowDeleteConfirm(true)}
-          className="mt-3 w-full py-3 bg-white border border-red-200 text-red-500 font-medium rounded-xl hover:bg-red-50 transition-colors flex items-center justify-center gap-2"
+          className="mt-3 w-full py-3 bg-gray-800 border border-red-800 text-red-400 font-medium rounded-xl hover:bg-red-900/20 transition-colors flex items-center justify-center gap-2"
         >
           <Trash2 size={16} />
           Delete Recipe
@@ -263,16 +263,16 @@ export default function RecipeDetail() {
 
         {/* Delete confirmation modal */}
         {showDeleteConfirm && (
-          <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-6">
-            <div className="bg-white rounded-2xl p-6 max-w-sm w-full">
-              <h3 className="text-lg font-bold text-gray-900">Delete recipe?</h3>
-              <p className="text-sm text-gray-500 mt-2">
+          <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-6">
+            <div className="bg-gray-800 rounded-2xl p-6 max-w-sm w-full border border-gray-700">
+              <h3 className="text-lg font-bold text-gray-100">Delete recipe?</h3>
+              <p className="text-sm text-gray-400 mt-2">
                 This will permanently delete <strong>{recipe.name}</strong> and remove it from any meal plans.
               </p>
               <div className="flex gap-3 mt-5">
                 <button
                   onClick={() => setShowDeleteConfirm(false)}
-                  className="flex-1 py-2.5 bg-gray-100 text-gray-700 font-medium rounded-xl"
+                  className="flex-1 py-2.5 bg-gray-700 text-gray-200 font-medium rounded-xl"
                   disabled={deleting}
                 >
                   Cancel
@@ -280,7 +280,7 @@ export default function RecipeDetail() {
                 <button
                   onClick={deleteRecipe}
                   disabled={deleting}
-                  className="flex-1 py-2.5 bg-red-500 text-white font-medium rounded-xl hover:bg-red-600 disabled:opacity-50"
+                  className="flex-1 py-2.5 bg-red-600 text-white font-medium rounded-xl hover:bg-red-700 disabled:opacity-50"
                 >
                   {deleting ? 'Deleting…' : 'Delete'}
                 </button>
@@ -290,13 +290,13 @@ export default function RecipeDetail() {
         )}
 
         {/* Tabs */}
-        <div className="flex gap-1 mt-5 bg-gray-100 p-1 rounded-xl">
+        <div className="flex gap-1 mt-5 bg-gray-800 p-1 rounded-xl">
           {TABS.map((t) => (
             <button
               key={t}
               onClick={() => setTab(t)}
               className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors ${
-                tab === t ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500'
+                tab === t ? 'bg-gray-700 text-gray-100 shadow-sm' : 'text-gray-400'
               }`}
             >
               {t}
@@ -309,12 +309,12 @@ export default function RecipeDetail() {
           {tab === 'Ingredients' && (
             <div className="space-y-2">
               {ingredients.length === 0 && (
-                <p className="text-gray-400 text-sm">No ingredients listed.</p>
+                <p className="text-gray-500 text-sm">No ingredients listed.</p>
               )}
               {ingredients.map((ing, i) => (
-                <div key={i} className="flex items-center justify-between py-2 border-b border-gray-100">
-                  <span className="text-gray-800">{ing.item}</span>
-                  <span className="text-gray-500 text-sm ml-4 shrink-0">
+                <div key={i} className="flex items-center justify-between py-2 border-b border-gray-700">
+                  <span className="text-gray-100">{ing.item}</span>
+                  <span className="text-gray-400 text-sm ml-4 shrink-0">
                     {ing.qty > 0 ? `${ing.qty} ` : ''}{ing.unit}
                   </span>
                 </div>
@@ -325,14 +325,14 @@ export default function RecipeDetail() {
           {tab === 'Steps' && (
             <ol className="space-y-4">
               {steps.length === 0 && (
-                <p className="text-gray-400 text-sm">No steps listed.</p>
+                <p className="text-gray-500 text-sm">No steps listed.</p>
               )}
               {steps.map((step, i) => (
                 <li key={i} className="flex gap-3">
-                  <span className="shrink-0 w-6 h-6 bg-emerald-100 text-emerald-700 rounded-full text-sm font-bold flex items-center justify-center">
+                  <span className="shrink-0 w-6 h-6 bg-emerald-900/50 text-emerald-300 rounded-full text-sm font-bold flex items-center justify-center">
                     {i + 1}
                   </span>
-                  <p className="text-gray-700 leading-relaxed pt-0.5">{step}</p>
+                  <p className="text-gray-200 leading-relaxed pt-0.5">{step}</p>
                 </li>
               ))}
             </ol>
@@ -340,7 +340,7 @@ export default function RecipeDetail() {
 
           {tab === 'Nutrition' && (
             <div className="space-y-3">
-              <p className="text-xs text-gray-400">Per serving</p>
+              <p className="text-xs text-gray-500">Per serving</p>
               <NutritionRow label="Calories" value={recipe.calories} unit="kcal" />
               <NutritionRow label="Protein" value={recipe.protein_g} unit="g" accent />
               <NutritionRow label="Carbohydrates" value={recipe.carbs_g} unit="g" />
@@ -360,7 +360,7 @@ export default function RecipeDetail() {
   )
 }
 
-function StatChip({ icon, label, className = 'bg-gray-100 text-gray-700 border-gray-200' }) {
+function StatChip({ icon, label, className = 'bg-gray-700 text-gray-200 border-gray-600' }) {
   return (
     <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium border ${className}`}>
       {icon}
@@ -372,9 +372,9 @@ function StatChip({ icon, label, className = 'bg-gray-100 text-gray-700 border-g
 function NutritionRow({ label, value, unit, accent = false }) {
   if (value == null) return null
   return (
-    <div className="flex items-center justify-between py-2 border-b border-gray-100">
-      <span className={`text-sm ${accent ? 'font-semibold text-emerald-700' : 'text-gray-700'}`}>{label}</span>
-      <span className={`text-sm ${accent ? 'font-semibold text-emerald-700' : 'text-gray-500'}`}>
+    <div className="flex items-center justify-between py-2 border-b border-gray-700">
+      <span className={`text-sm ${accent ? 'font-semibold text-emerald-400' : 'text-gray-200'}`}>{label}</span>
+      <span className={`text-sm ${accent ? 'font-semibold text-emerald-400' : 'text-gray-400'}`}>
         {value} {unit}
       </span>
     </div>

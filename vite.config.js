@@ -12,9 +12,9 @@ export default defineConfig({
         short_name: 'Plaited',
         description: 'AI-powered family meal planning',
         theme_color: '#10b981',
-        background_color: '#ffffff',
+        background_color: '#111827',
         display: 'standalone',
-        start_url: '/today',
+        start_url: '/meals',
         icons: [
           { src: 'pwa-192x192.png', sizes: '192x192', type: 'image/png' },
           { src: 'pwa-512x512.png', sizes: '512x512', type: 'image/png', purpose: 'any maskable' },

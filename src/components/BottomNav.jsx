@@ -10,7 +10,7 @@ const navItems = [
 
 export default function BottomNav() {
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-gray-200 safe-bottom">
+    <nav className="fixed bottom-0 left-0 right-0 z-40 bg-gray-800 border-t border-gray-700 safe-bottom">
       <div className="flex">
         {navItems.map(({ to, icon: Icon, label }) => (
           <NavLink
@@ -18,7 +18,7 @@ export default function BottomNav() {
             to={to}
             className={({ isActive }) =>
               `flex-1 flex flex-col items-center justify-center py-2 gap-0.5 text-xs transition-colors ${
-                isActive ? 'text-emerald-600' : 'text-gray-500 hover:text-gray-700'
+                isActive ? 'text-emerald-400' : 'text-gray-400 hover:text-gray-200'
               }`
             }
           >
@@ -27,7 +27,7 @@ export default function BottomNav() {
                 <Icon
                   size={22}
                   strokeWidth={isActive ? 2.5 : 1.75}
-                  className={isActive ? 'text-emerald-600' : 'text-gray-400'}
+                  className={isActive ? 'text-emerald-400' : 'text-gray-500'}
                 />
                 <span className={isActive ? 'font-semibold' : ''}>{label}</span>
               </>

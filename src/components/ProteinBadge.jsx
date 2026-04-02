@@ -11,8 +11,8 @@ export default function ProteinBadge({ proteinG, proteinRatio }) {
     <span
       className={`inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-xs font-medium ${
         isHigh
-          ? 'bg-emerald-100 text-emerald-800'
-          : 'bg-gray-100 text-gray-600'
+          ? 'bg-emerald-900/50 text-emerald-300'
+          : 'bg-gray-700 text-gray-300'
       }`}
     >
       {proteinG ? `${Math.round(proteinG)}g protein` : `${Math.round(proteinRatio)}g/100cal`}

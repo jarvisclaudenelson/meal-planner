@@ -41,14 +41,14 @@ export default function Meals() {
   const totalMeals = positions.length
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-4">
+    <div className="min-h-screen bg-gray-900 pb-4">
       {/* Header */}
-      <div className="sticky top-0 z-10 bg-white border-b border-gray-100">
+      <div className="sticky top-0 z-10 bg-gray-800 border-b border-gray-700">
         <div className="flex items-center justify-between px-4 py-3">
-          <h1 className="text-xl font-bold text-gray-900">This Week's Meals</h1>
+          <h1 className="text-xl font-bold text-gray-100">This Week's Meals</h1>
           <button
             onClick={() => setShowConfig(!showConfig)}
-            className={`p-2 rounded-xl transition-colors ${showConfig ? 'bg-emerald-50 text-emerald-600' : 'hover:bg-gray-100 text-gray-500'}`}
+            className={`p-2 rounded-xl transition-colors ${showConfig ? 'bg-emerald-900/50 text-emerald-400' : 'hover:bg-gray-700 text-gray-400'}`}
           >
             <Settings size={20} />
           </button>
@@ -56,30 +56,30 @@ export default function Meals() {
 
         {/* Config editor */}
         {showConfig && (
-          <div className="px-4 pb-3 border-t border-gray-50 pt-3 space-y-2">
-            <p className="text-xs font-medium text-gray-400 uppercase tracking-wide">Meals per week</p>
+          <div className="px-4 pb-3 border-t border-gray-700 pt-3 space-y-2">
+            <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">Meals per week</p>
             {MEAL_TYPES.map(({ type, label }) => {
               const Icon = TYPE_ICONS[type]
               const count = config[type] ?? 0
               return (
                 <div key={type} className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    {Icon && <Icon size={14} className="text-gray-500" />}
-                    <span className="text-sm text-gray-700">{label}</span>
+                    {Icon && <Icon size={14} className="text-gray-400" />}
+                    <span className="text-sm text-gray-200">{label}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => setConfig({ [type]: Math.max(0, count - 1) })}
                       disabled={count === 0}
-                      className="w-7 h-7 flex items-center justify-center rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 disabled:opacity-30"
+                      className="w-7 h-7 flex items-center justify-center rounded-lg bg-gray-700 hover:bg-gray-600 text-gray-300 disabled:opacity-30"
                     >
                       <Minus size={14} />
                     </button>
-                    <span className="w-5 text-center text-sm font-semibold text-gray-800">{count}</span>
+                    <span className="w-5 text-center text-sm font-semibold text-gray-100">{count}</span>
                     <button
                       onClick={() => setConfig({ [type]: Math.min(5, count + 1) })}
                       disabled={count >= 5}
-                      className="w-7 h-7 flex items-center justify-center rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 disabled:opacity-30"
+                      className="w-7 h-7 flex items-center justify-center rounded-lg bg-gray-700 hover:bg-gray-600 text-gray-300 disabled:opacity-30"
                     >
                       <Plus size={14} />
                     </button>
@@ -87,18 +87,18 @@ export default function Meals() {
                 </div>
               )
             })}
-            <p className="text-xs text-gray-400 pt-1">{totalMeals} meal{totalMeals !== 1 ? 's' : ''} this week</p>
+            <p className="text-xs text-gray-500 pt-1">{totalMeals} meal{totalMeals !== 1 ? 's' : ''} this week</p>
           </div>
         )}
 
         {/* Week navigation */}
         <div className="flex items-center justify-between px-4 pb-3">
-          <button onClick={prevWeek} className="p-2 rounded-xl hover:bg-gray-100">
-            <ChevronLeft size={20} className="text-gray-600" />
+          <button onClick={prevWeek} className="p-2 rounded-xl hover:bg-gray-700">
+            <ChevronLeft size={20} className="text-gray-300" />
           </button>
-          <span className="font-semibold text-gray-700 text-sm">Week {weekNumber}</span>
-          <button onClick={nextWeek} className="p-2 rounded-xl hover:bg-gray-100">
-            <ChevronRight size={20} className="text-gray-600" />
+          <span className="font-semibold text-gray-200 text-sm">Week {weekNumber}</span>
+          <button onClick={nextWeek} className="p-2 rounded-xl hover:bg-gray-700">
+            <ChevronRight size={20} className="text-gray-300" />
           </button>
         </div>
       </div>
@@ -106,7 +106,7 @@ export default function Meals() {
       {loading ? (
         <LoadingSpinner />
       ) : positions.length === 0 ? (
-        <div className="text-center py-16 px-8 text-gray-400">
+        <div className="text-center py-16 px-8 text-gray-500">
           <p className="text-lg font-medium">No meals configured</p>
           <p className="text-sm mt-1">Tap the gear icon to set how many meals you want this week.</p>
         </div>
@@ -122,7 +122,7 @@ export default function Meals() {
             return (
               <div
                 key={pos.key}
-                className={`bg-white rounded-xl border shadow-sm overflow-hidden ${colors.border}`}
+                className={`bg-gray-800 rounded-xl border shadow-sm overflow-hidden ${colors.border}`}
               >
                 {/* Color bar + label */}
                 <div className={`flex items-center gap-2 px-4 py-2.5 ${colors.bg}`}>
@@ -144,33 +144,33 @@ export default function Meals() {
                         className="flex-1 min-w-0 cursor-pointer"
                         onClick={() => navigate(`/recipes/${recipe.id}`)}
                       >
-                        <p className="font-medium text-gray-900 text-sm truncate">{recipe.name}</p>
+                        <p className="font-medium text-gray-100 text-sm truncate">{recipe.name}</p>
                         <div className="flex items-center gap-3 mt-1">
                           {recipe.total_time_min != null && (
-                            <span className="flex items-center gap-1 text-xs text-gray-400">
+                            <span className="flex items-center gap-1 text-xs text-gray-500">
                               <Clock size={10} />
                               {recipe.total_time_min} min
                             </span>
                           )}
                           {recipe.servings && (
-                            <span className="text-xs text-gray-400">{recipe.servings} servings</span>
+                            <span className="text-xs text-gray-500">{recipe.servings} servings</span>
                           )}
                           {recipe.protein_g != null && (
-                            <span className="text-xs text-emerald-600">{Math.round(recipe.protein_g)}g protein</span>
+                            <span className="text-xs text-emerald-400">{Math.round(recipe.protein_g)}g protein</span>
                           )}
                         </div>
                       </div>
                       <div className="flex items-center gap-1">
                         <button
                           onClick={() => setPicker({ position: pos.key, type: pos.type })}
-                          className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-gray-600"
+                          className="p-1.5 rounded-lg hover:bg-gray-700 text-gray-500 hover:text-gray-300"
                           title="Swap recipe"
                         >
                           <RefreshCw size={14} />
                         </button>
                         <button
                           onClick={() => clearMeal(pos.key)}
-                          className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-gray-600"
+                          className="p-1.5 rounded-lg hover:bg-gray-700 text-gray-500 hover:text-gray-300"
                           title="Remove"
                         >
                           <X size={14} />
@@ -180,7 +180,7 @@ export default function Meals() {
                   ) : (
                     <button
                       onClick={() => setPicker({ position: pos.key, type: pos.type })}
-                      className="w-full py-3 border-2 border-dashed border-gray-200 rounded-lg text-gray-400 hover:border-gray-300 hover:text-gray-500 text-sm font-medium transition-colors"
+                      className="w-full py-3 border-2 border-dashed border-gray-600 rounded-lg text-gray-500 hover:border-gray-500 hover:text-gray-400 text-sm font-medium transition-colors"
                     >
                       + Pick a {pos.label.toLowerCase()} recipe
                     </button>

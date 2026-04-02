@@ -51,14 +51,14 @@ export default function Shopping() {
   const totalCount = items.length
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-6">
+    <div className="min-h-screen bg-gray-900 pb-6">
       {/* Header */}
-      <div className="sticky top-0 z-10 bg-white border-b border-gray-100">
+      <div className="sticky top-0 z-10 bg-gray-800 border-b border-gray-700">
         <div className="px-4 pt-4 pb-2">
           <div className="flex items-center justify-between">
-            <h1 className="text-xl font-bold text-gray-900">Shopping List</h1>
+            <h1 className="text-xl font-bold text-gray-100">Shopping List</h1>
             {totalCount > 0 && (
-              <span className="text-sm text-gray-400">
+              <span className="text-sm text-gray-500">
                 {checkedCount}/{totalCount} done
               </span>
             )}
@@ -66,18 +66,18 @@ export default function Shopping() {
 
           {/* Week navigation */}
           <div className="flex items-center justify-between mt-2">
-            <button onClick={prevWeek} className="p-1.5 rounded-lg hover:bg-gray-100">
-              <ChevronLeft size={18} className="text-gray-600" />
+            <button onClick={prevWeek} className="p-1.5 rounded-lg hover:bg-gray-700">
+              <ChevronLeft size={18} className="text-gray-300" />
             </button>
-            <span className="text-sm font-medium text-gray-600">Week {weekNumber}</span>
-            <button onClick={nextWeek} className="p-1.5 rounded-lg hover:bg-gray-100">
-              <ChevronRight size={18} className="text-gray-600" />
+            <span className="text-sm font-medium text-gray-300">Week {weekNumber}</span>
+            <button onClick={nextWeek} className="p-1.5 rounded-lg hover:bg-gray-700">
+              <ChevronRight size={18} className="text-gray-300" />
             </button>
           </div>
         </div>
 
         {/* Action bar */}
-        <div className="flex gap-2 px-4 pb-3 border-t border-gray-50 pt-2">
+        <div className="flex gap-2 px-4 pb-3 border-t border-gray-700 pt-2">
           <button
             onClick={handleGenerate}
             disabled={generating}
@@ -89,15 +89,15 @@ export default function Shopping() {
           <button
             onClick={handleExport}
             disabled={items.length === 0}
-            className="flex items-center gap-1.5 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium rounded-xl transition-colors disabled:opacity-40"
+            className="flex items-center gap-1.5 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-gray-200 text-sm font-medium rounded-xl transition-colors disabled:opacity-40"
           >
-            {copied ? <Check size={15} className="text-emerald-600" /> : <Clipboard size={15} />}
+            {copied ? <Check size={15} className="text-emerald-400" /> : <Clipboard size={15} />}
             {copied ? 'Copied!' : 'Export'}
           </button>
           {items.length > 0 && (
             <button
               onClick={resetList}
-              className="p-2 hover:bg-red-50 text-gray-400 hover:text-red-500 rounded-xl transition-colors"
+              className="p-2 hover:bg-red-900/30 text-gray-500 hover:text-red-400 rounded-xl transition-colors"
               title="Clear list"
             >
               <Trash2 size={18} />
@@ -110,7 +110,7 @@ export default function Shopping() {
       {loading ? (
         <LoadingSpinner />
       ) : items.length === 0 ? (
-        <div className="text-center py-16 text-gray-400 px-8">
+        <div className="text-center py-16 text-gray-500 px-8">
           <ShoppingBagIcon />
           <p className="text-lg font-medium mt-3">Your list is empty</p>
           <p className="text-sm mt-1">
@@ -122,15 +122,15 @@ export default function Shopping() {
         <div className="px-4 pt-4 space-y-6">
           {allSections.map((section) => (
             <div key={section}>
-              <h2 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2 px-1">
+              <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2 px-1">
                 {section}
               </h2>
-              <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+              <div className="bg-gray-800 rounded-xl border border-gray-700 shadow-sm overflow-hidden">
                 {sections[section].map((item, idx) => (
                   <div
                     key={item.id}
                     className={`flex items-center gap-3 px-4 py-3 ${
-                      idx > 0 ? 'border-t border-gray-50' : ''
+                      idx > 0 ? 'border-t border-gray-700' : ''
                     } ${item.checked ? 'opacity-50' : ''}`}
                   >
                     <button
@@ -138,18 +138,18 @@ export default function Shopping() {
                       className={`shrink-0 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors ${
                         item.checked
                           ? 'bg-emerald-500 border-emerald-500'
-                          : 'border-gray-300 hover:border-emerald-400'
+                          : 'border-gray-600 hover:border-emerald-400'
                       }`}
                     >
                       {item.checked && <Check size={11} className="text-white" strokeWidth={3} />}
                     </button>
 
                     <div className="flex-1 min-w-0">
-                      <span className={`text-sm text-gray-800 ${item.checked ? 'line-through' : ''}`}>
+                      <span className={`text-sm text-gray-100 ${item.checked ? 'line-through' : ''}`}>
                         {item.name}
                       </span>
                       {(item.qty > 0 || item.unit) && (
-                        <span className="text-xs text-gray-400 ml-2">
+                        <span className="text-xs text-gray-500 ml-2">
                           {item.qty > 0 ? item.qty : ''}{item.unit ? ' ' + item.unit : ''}
                         </span>
                       )}
@@ -157,7 +157,7 @@ export default function Shopping() {
 
                     <button
                       onClick={() => removeItem(item.id)}
-                      className="shrink-0 p-1 hover:text-red-500 text-gray-300 rounded transition-colors"
+                      className="shrink-0 p-1 hover:text-red-400 text-gray-600 rounded transition-colors"
                     >
                       <Trash2 size={14} />
                     </button>
@@ -177,7 +177,7 @@ export default function Shopping() {
             value={customInput}
             onChange={(e) => setCustomInput(e.target.value)}
             placeholder="Add item…"
-            className="flex-1 px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm shadow-sm outline-none focus:ring-2 focus:ring-emerald-400"
+            className="flex-1 px-4 py-2.5 bg-gray-800 border border-gray-700 rounded-xl text-sm text-gray-100 shadow-sm outline-none focus:ring-2 focus:ring-emerald-400 placeholder-gray-500"
           />
           <button
             type="submit"
@@ -194,7 +194,7 @@ export default function Shopping() {
 
 function ShoppingBagIcon() {
   return (
-    <svg className="mx-auto w-16 h-16 text-gray-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+    <svg className="mx-auto w-16 h-16 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
       <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007z" />
     </svg>
   )

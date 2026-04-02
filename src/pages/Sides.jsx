@@ -28,20 +28,20 @@ export default function Sides() {
   const filledPositions = positions.filter(pos => plan[pos.key]?.recipe)
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-4">
+    <div className="min-h-screen bg-gray-900 pb-4">
       {/* Header */}
-      <div className="sticky top-0 z-10 bg-white border-b border-gray-100">
+      <div className="sticky top-0 z-10 bg-gray-800 border-b border-gray-700">
         <div className="flex items-center justify-between px-4 py-3">
-          <h1 className="text-xl font-bold text-gray-900">Sides</h1>
+          <h1 className="text-xl font-bold text-gray-100">Sides</h1>
         </div>
 
         <div className="flex items-center justify-between px-4 pb-3">
-          <button onClick={prevWeek} className="p-2 rounded-xl hover:bg-gray-100">
-            <ChevronLeft size={20} className="text-gray-600" />
+          <button onClick={prevWeek} className="p-2 rounded-xl hover:bg-gray-700">
+            <ChevronLeft size={20} className="text-gray-300" />
           </button>
-          <span className="font-semibold text-gray-700 text-sm">Week {weekNumber}</span>
-          <button onClick={nextWeek} className="p-2 rounded-xl hover:bg-gray-100">
-            <ChevronRight size={20} className="text-gray-600" />
+          <span className="font-semibold text-gray-200 text-sm">Week {weekNumber}</span>
+          <button onClick={nextWeek} className="p-2 rounded-xl hover:bg-gray-700">
+            <ChevronRight size={20} className="text-gray-300" />
           </button>
         </div>
       </div>
@@ -49,7 +49,7 @@ export default function Sides() {
       {loading ? (
         <LoadingSpinner />
       ) : filledPositions.length === 0 ? (
-        <div className="text-center py-16 px-8 text-gray-400">
+        <div className="text-center py-16 px-8 text-gray-500">
           <p className="text-lg font-medium">No meals picked yet</p>
           <p className="text-sm mt-1">Head to the Meals tab to pick this week's recipes first.</p>
         </div>
@@ -75,16 +75,16 @@ export default function Sides() {
                   {sides.map((side) => (
                     <div
                       key={side.id}
-                      className={`flex items-center gap-2 px-3 py-2.5 bg-white rounded-lg border ${colors.border} ring-1 ${colors.ring}`}
+                      className={`flex items-center gap-2 px-3 py-2.5 bg-gray-800 rounded-lg border ${colors.border} ring-1 ${colors.ring}`}
                     >
                       <div className={`w-1.5 h-1.5 rounded-full ${colors.dot} shrink-0`} />
                       <div
                         className="flex-1 min-w-0 cursor-pointer"
                         onClick={() => navigate(`/recipes/${side.id}`)}
                       >
-                        <p className="text-sm font-medium text-gray-800 truncate">{side.name}</p>
+                        <p className="text-sm font-medium text-gray-100 truncate">{side.name}</p>
                         {side.total_time_min != null && (
-                          <span className="flex items-center gap-1 text-xs text-gray-400 mt-0.5">
+                          <span className="flex items-center gap-1 text-xs text-gray-500 mt-0.5">
                             <Clock size={10} />
                             {side.total_time_min} min
                           </span>
@@ -92,7 +92,7 @@ export default function Sides() {
                       </div>
                       <button
                         onClick={() => removeSide(pos.key, side.id)}
-                        className="p-1 rounded hover:bg-gray-100 text-gray-400 hover:text-gray-600"
+                        className="p-1 rounded hover:bg-gray-700 text-gray-500 hover:text-gray-300"
                       >
                         <X size={14} />
                       </button>
