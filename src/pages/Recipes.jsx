@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom'
-import { Search, Star, Zap, Dumbbell, Baby, ArrowUpDown, UtensilsCrossed, Salad } from 'lucide-react'
+import { Search, Star, Zap, Dumbbell, Baby, ArrowUpDown, UtensilsCrossed, Salad, Flame, Timer, Leaf } from 'lucide-react'
 import { useRecipes } from '../hooks/useRecipes'
 import RecipeCard from '../components/RecipeCard'
 import LoadingSpinner from '../components/LoadingSpinner'
@@ -7,6 +7,9 @@ import LoadingSpinner from '../components/LoadingSpinner'
 const FILTER_CHIPS = [
   { key: 'mealsOnly', label: 'Meals', icon: UtensilsCrossed },
   { key: 'sidesOnly', label: 'Sides', icon: Salad },
+  { key: 'bigCook', label: 'Big Cook', icon: Flame },
+  { key: 'slowCooker', label: 'Slow Cooker', icon: Timer },
+  { key: 'noCook', label: 'No Cook', icon: Leaf },
   { key: 'starred', label: 'Starred', icon: Star },
   { key: 'quickOnly', label: 'Quick (<30 min)', icon: Zap },
   { key: 'highProtein', label: 'High Protein', icon: Dumbbell },
@@ -34,11 +37,16 @@ export default function Recipes() {
     toggleStar,
   } = useRecipes()
 
+  const TYPE_KEYS = ['mealsOnly', 'sidesOnly', 'bigCook', 'slowCooker', 'noCook']
+
   function toggleFilter(key) {
     setFilters((prev) => {
-      // Meals/Sides are mutually exclusive
-      if (key === 'mealsOnly' && !prev.mealsOnly) return { ...prev, mealsOnly: true, sidesOnly: false }
-      if (key === 'sidesOnly' && !prev.sidesOnly) return { ...prev, sidesOnly: true, mealsOnly: false }
+      // Type filters are mutually exclusive
+      if (TYPE_KEYS.includes(key)) {
+        const cleared = {}
+        for (const k of TYPE_KEYS) cleared[k] = false
+        return { ...prev, ...cleared, [key]: !prev[key] }
+      }
       return { ...prev, [key]: !prev[key] }
     })
   }
