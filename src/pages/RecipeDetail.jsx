@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { ArrowLeft, Star, Clock, Users, ChevronLeft, ChevronRight, X, Lightbulb } from 'lucide-react'
+import { ArrowLeft, Star, Clock, Users, ChevronLeft, ChevronRight, X, Lightbulb, Trash2 } from 'lucide-react'
 import { useRecipe } from '../hooks/useRecipes'
 import { supabase } from '../lib/supabase'
 import LoadingSpinner from '../components/LoadingSpinner'
@@ -23,6 +23,8 @@ export default function RecipeDetail() {
   const [starred, setStarred] = useState(false)
   const [cookingMode, setCookingMode] = useState(false)
   const [stepIndex, setStepIndex] = useState(0)
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
+  const [deleting, setDeleting] = useState(false)
   const wakeLockRef = useRef(null)
 
   useEffect(() => {
@@ -46,6 +48,20 @@ export default function RecipeDetail() {
     const newVal = !starred
     setStarred(newVal)
     await supabase.from('recipes').update({ starred: newVal }).eq('id', id)
+  }
+
+  async function deleteRecipe() {
+    setDeleting(true)
+    // Delete related meal_plans and meal_sides first
+    await supabase.from('meal_sides').delete().eq('recipe_id', id)
+    await supabase.from('meal_plans').delete().eq('recipe_id', id)
+    const { error: delError } = await supabase.from('recipes').delete().eq('id', id)
+    if (delError) {
+      setDeleting(false)
+      setShowDeleteConfirm(false)
+      return
+    }
+    navigate('/recipes', { replace: true })
   }
 
   if (loading) return <LoadingSpinner />
@@ -234,6 +250,43 @@ export default function RecipeDetail() {
           >
             Start Cooking Mode
           </button>
+        )}
+
+        {/* Delete */}
+        <button
+          onClick={() => setShowDeleteConfirm(true)}
+          className="mt-3 w-full py-3 bg-white border border-red-200 text-red-500 font-medium rounded-xl hover:bg-red-50 transition-colors flex items-center justify-center gap-2"
+        >
+          <Trash2 size={16} />
+          Delete Recipe
+        </button>
+
+        {/* Delete confirmation modal */}
+        {showDeleteConfirm && (
+          <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-6">
+            <div className="bg-white rounded-2xl p-6 max-w-sm w-full">
+              <h3 className="text-lg font-bold text-gray-900">Delete recipe?</h3>
+              <p className="text-sm text-gray-500 mt-2">
+                This will permanently delete <strong>{recipe.name}</strong> and remove it from any meal plans.
+              </p>
+              <div className="flex gap-3 mt-5">
+                <button
+                  onClick={() => setShowDeleteConfirm(false)}
+                  className="flex-1 py-2.5 bg-gray-100 text-gray-700 font-medium rounded-xl"
+                  disabled={deleting}
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={deleteRecipe}
+                  disabled={deleting}
+                  className="flex-1 py-2.5 bg-red-500 text-white font-medium rounded-xl hover:bg-red-600 disabled:opacity-50"
+                >
+                  {deleting ? 'Deleting…' : 'Delete'}
+                </button>
+              </div>
+            </div>
+          </div>
         )}
 
         {/* Tabs */}
