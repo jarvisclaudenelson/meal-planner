@@ -18,9 +18,9 @@ function sectionIndex(section) {
 
 /**
  * Shopping list for a given week.
- * plan shape: { 'big-cook-1': { recipe, sides: [...] }, ... }
+ * Fetches meal plan data directly from DB when generating.
  */
-export function useShoppingList(weekStart, plan) {
+export function useShoppingList(weekStart) {
   const [items, setItems] = useState([])
   const [loading, setLoading] = useState(false)
 
@@ -49,17 +49,26 @@ export function useShoppingList(weekStart, plan) {
     )
   }
 
-  /** Generate list from current week's meal plan. Merges ingredients by item+unit key. */
+  /** Generate list from current week's meal plan. Fetches fresh data from DB. */
   async function generateList() {
-    const recipes = []
+    // Fetch meals and sides directly from DB to avoid stale state
+    const [mealsRes, sidesRes] = await Promise.all([
+      supabase
+        .from('meal_plans')
+        .select('recipe:recipes!meal_plans_recipe_id_fkey(*)')
+        .eq('week_start', weekStart),
+      supabase
+        .from('meal_sides')
+        .select('recipe:recipes!meal_sides_recipe_id_fkey(*)')
+        .eq('week_start', weekStart),
+    ])
 
-    for (const slot of Object.values(plan ?? {})) {
-      if (slot?.recipe) recipes.push(slot.recipe)
-      if (slot?.sides) {
-        for (const side of slot.sides) {
-          if (side) recipes.push(side)
-        }
-      }
+    const recipes = []
+    for (const row of mealsRes.data ?? []) {
+      if (row.recipe) recipes.push(row.recipe)
+    }
+    for (const row of sidesRes.data ?? []) {
+      if (row.recipe) recipes.push(row.recipe)
     }
 
     const consolidated = {}

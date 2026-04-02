@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { ChevronLeft, ChevronRight, RefreshCw, Clipboard, Plus, Trash2, Check } from 'lucide-react'
-import { useMealPlan } from '../hooks/useMealPlan'
 import { useShoppingList, SECTION_ORDER } from '../hooks/useShoppingList'
 import { useWeek } from '../context/WeekContext'
 import LoadingSpinner from '../components/LoadingSpinner'
@@ -11,9 +10,8 @@ export default function Shopping() {
   const [copied, setCopied] = useState(false)
   const { weekStart, weekNumber, prevWeek, nextWeek } = useWeek()
 
-  const { plan } = useMealPlan(weekStart)
   const { items, loading, generateList, toggleItem, addCustomItem, removeItem, resetList, exportList } =
-    useShoppingList(weekStart, plan)
+    useShoppingList(weekStart)
 
   async function handleGenerate() {
     setGenerating(true)
