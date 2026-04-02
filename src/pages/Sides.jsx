@@ -10,7 +10,6 @@ import LoadingSpinner from '../components/LoadingSpinner'
 
 export default function Sides() {
   const navigate = useNavigate()
-  const [searchParams, setSearchParams] = useSearchParams()
   const [picker, setPicker] = useState(null)
   const [config] = useMealConfig()
   const { weekStart, weekNumber, prevWeek, nextWeek } = useWeekNav()

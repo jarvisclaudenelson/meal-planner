@@ -16,7 +16,6 @@ const TYPE_ICONS = {
 
 export default function Meals() {
   const navigate = useNavigate()
-  const [searchParams, setSearchParams] = useSearchParams()
   const [picker, setPicker] = useState(null)
   const [showConfig, setShowConfig] = useState(false)
   const [config, setConfig] = useMealConfig()

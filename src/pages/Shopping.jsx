@@ -6,7 +6,6 @@ import { useWeekNav } from '../hooks/useWeekNav'
 import LoadingSpinner from '../components/LoadingSpinner'
 
 export default function Shopping() {
-  const [searchParams, setSearchParams] = useSearchParams()
   const [customInput, setCustomInput] = useState('')
   const [generating, setGenerating] = useState(false)
   const [copied, setCopied] = useState(false)
