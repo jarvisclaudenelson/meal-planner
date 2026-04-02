@@ -1,10 +1,12 @@
 import { useNavigate } from 'react-router-dom'
-import { Search, Star, Zap, Dumbbell, Baby, ArrowUpDown } from 'lucide-react'
+import { Search, Star, Zap, Dumbbell, Baby, ArrowUpDown, UtensilsCrossed, Salad } from 'lucide-react'
 import { useRecipes } from '../hooks/useRecipes'
 import RecipeCard from '../components/RecipeCard'
 import LoadingSpinner from '../components/LoadingSpinner'
 
 const FILTER_CHIPS = [
+  { key: 'mealsOnly', label: 'Meals', icon: UtensilsCrossed },
+  { key: 'sidesOnly', label: 'Sides', icon: Salad },
   { key: 'starred', label: 'Starred', icon: Star },
   { key: 'quickOnly', label: 'Quick (<30 min)', icon: Zap },
   { key: 'highProtein', label: 'High Protein', icon: Dumbbell },
@@ -33,7 +35,12 @@ export default function Recipes() {
   } = useRecipes()
 
   function toggleFilter(key) {
-    setFilters((prev) => ({ ...prev, [key]: !prev[key] }))
+    setFilters((prev) => {
+      // Meals/Sides are mutually exclusive
+      if (key === 'mealsOnly' && !prev.mealsOnly) return { ...prev, mealsOnly: true, sidesOnly: false }
+      if (key === 'sidesOnly' && !prev.sidesOnly) return { ...prev, sidesOnly: true, mealsOnly: false }
+      return { ...prev, [key]: !prev[key] }
+    })
   }
 
   if (error) {

@@ -1,10 +1,8 @@
 import { useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
 import { ChevronLeft, ChevronRight, RefreshCw, Clipboard, Plus, Trash2, Check } from 'lucide-react'
 import { useMealPlan } from '../hooks/useMealPlan'
 import { useShoppingList, SECTION_ORDER } from '../hooks/useShoppingList'
-import { useWeekStartDay } from '../hooks/useWeekStartDay'
-import { getWeekStart, formatDate, addDays } from '../lib/dates'
+import { useWeekNav } from '../hooks/useWeekNav'
 import LoadingSpinner from '../components/LoadingSpinner'
 
 export default function Shopping() {
@@ -12,21 +10,11 @@ export default function Shopping() {
   const [customInput, setCustomInput] = useState('')
   const [generating, setGenerating] = useState(false)
   const [copied, setCopied] = useState(false)
-  const [startDay] = useWeekStartDay()
-
-  const weekParam = searchParams.get('week')
-  const weekStart = weekParam ?? formatDate(getWeekStart(new Date(), startDay))
-
-  function setWeek(date) {
-    setSearchParams({ week: formatDate(date) })
-  }
+  const { weekStart, weekNumber, prevWeek, nextWeek } = useWeekNav()
 
   const { plan } = useMealPlan(weekStart)
   const { items, loading, generateList, toggleItem, addCustomItem, removeItem, resetList, exportList } =
     useShoppingList(weekStart, plan)
-
-  const weekEnd = addDays(weekStart, 6)
-  const rangeLabel = `${formatDate(weekStart, 'MMM D')} – ${formatDate(weekEnd, 'MMM D')}`
 
   async function handleGenerate() {
     setGenerating(true)
@@ -74,17 +62,11 @@ export default function Shopping() {
 
           {/* Week navigation */}
           <div className="flex items-center justify-between mt-2">
-            <button
-              onClick={() => setWeek(addDays(weekStart, -7))}
-              className="p-1.5 rounded-lg hover:bg-gray-100"
-            >
+            <button onClick={prevWeek} className="p-1.5 rounded-lg hover:bg-gray-100">
               <ChevronLeft size={18} className="text-gray-600" />
             </button>
-            <span className="text-sm font-medium text-gray-600">{rangeLabel}</span>
-            <button
-              onClick={() => setWeek(addDays(weekStart, 7))}
-              className="p-1.5 rounded-lg hover:bg-gray-100"
-            >
+            <span className="text-sm font-medium text-gray-600">Week {weekNumber}</span>
+            <button onClick={nextWeek} className="p-1.5 rounded-lg hover:bg-gray-100">
               <ChevronRight size={18} className="text-gray-600" />
             </button>
           </div>

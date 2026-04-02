@@ -11,6 +11,8 @@ export function useRecipes() {
     quickOnly: false,    // total_time_min <= 30
     highProtein: false,  // protein_ratio >= 8 g/100cal
     kidFriendly: false,  // has 'kid-friendly' tag
+    mealsOnly: false,    // exclude sides
+    sidesOnly: false,    // only sides
   })
   const [sort, setSort] = useState('name') // 'name' | 'protein' | 'time'
 
@@ -40,6 +42,8 @@ export function useRecipes() {
       if (filters.quickOnly && (r.total_time_min ?? 999) > 30) return false
       if (filters.highProtein && (r.protein_ratio ?? 0) < 8) return false
       if (filters.kidFriendly && !r.tags?.includes('kid-friendly')) return false
+      if (filters.mealsOnly && r.tags?.includes('side')) return false
+      if (filters.sidesOnly && !r.tags?.includes('side')) return false
       return true
     })
     .sort((a, b) => {

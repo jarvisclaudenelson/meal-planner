@@ -1,23 +1,43 @@
 import { useState, useEffect, useCallback } from 'react'
 import { supabase } from '../lib/supabase'
 
-export const POSITIONS = [
-  { key: 'big-cook-1', label: 'Big Cook', type: 'big-cook' },
-  { key: 'big-cook-2', label: 'Big Cook', type: 'big-cook' },
-  { key: 'slow-cooker', label: 'Slow Cooker', type: 'slow-cooker' },
-  { key: 'no-cook', label: 'No Cook / Assemble', type: 'no-cook' },
+export const MEAL_TYPES = [
+  { type: 'big-cook', label: 'Big Cook' },
+  { type: 'slow-cooker', label: 'Slow Cooker' },
+  { type: 'no-cook', label: 'No Cook / Assemble' },
 ]
 
-// Color palette for meal-to-side matching
-export const MEAL_COLORS = {
-  'big-cook-1': { bg: 'bg-blue-50', border: 'border-blue-200', text: 'text-blue-700', dot: 'bg-blue-500', ring: 'ring-blue-200', label: 'Blue' },
-  'big-cook-2': { bg: 'bg-amber-50', border: 'border-amber-200', text: 'text-amber-700', dot: 'bg-amber-500', ring: 'ring-amber-200', label: 'Amber' },
-  'slow-cooker': { bg: 'bg-rose-50', border: 'border-rose-200', text: 'text-rose-700', dot: 'bg-rose-500', ring: 'ring-rose-200', label: 'Rose' },
-  'no-cook': { bg: 'bg-emerald-50', border: 'border-emerald-200', text: 'text-emerald-700', dot: 'bg-emerald-500', ring: 'ring-emerald-200', label: 'Green' },
+/** Build positions array from config like { 'big-cook': 2, 'slow-cooker': 1, 'no-cook': 1 } */
+export function buildPositions(config) {
+  const positions = []
+  for (const { type, label } of MEAL_TYPES) {
+    const count = config[type] ?? 0
+    for (let i = 1; i <= count; i++) {
+      positions.push({ key: `${type}-${i}`, label, type })
+    }
+  }
+  return positions
+}
+
+// Color palette — assigned per position index, stable within a config
+const COLOR_PALETTE = [
+  { bg: 'bg-blue-50', border: 'border-blue-200', text: 'text-blue-700', dot: 'bg-blue-500', ring: 'ring-blue-200' },
+  { bg: 'bg-amber-50', border: 'border-amber-200', text: 'text-amber-700', dot: 'bg-amber-500', ring: 'ring-amber-200' },
+  { bg: 'bg-rose-50', border: 'border-rose-200', text: 'text-rose-700', dot: 'bg-rose-500', ring: 'ring-rose-200' },
+  { bg: 'bg-emerald-50', border: 'border-emerald-200', text: 'text-emerald-700', dot: 'bg-emerald-500', ring: 'ring-emerald-200' },
+  { bg: 'bg-purple-50', border: 'border-purple-200', text: 'text-purple-700', dot: 'bg-purple-500', ring: 'ring-purple-200' },
+  { bg: 'bg-cyan-50', border: 'border-cyan-200', text: 'text-cyan-700', dot: 'bg-cyan-500', ring: 'ring-cyan-200' },
+  { bg: 'bg-orange-50', border: 'border-orange-200', text: 'text-orange-700', dot: 'bg-orange-500', ring: 'ring-orange-200' },
+  { bg: 'bg-pink-50', border: 'border-pink-200', text: 'text-pink-700', dot: 'bg-pink-500', ring: 'ring-pink-200' },
+]
+
+export function getColorForPosition(positions, key) {
+  const index = positions.findIndex(p => p.key === key)
+  return COLOR_PALETTE[Math.max(0, index) % COLOR_PALETTE.length]
 }
 
 /**
- * Manages the weekly meal plan (4 positions) and their sides.
+ * Manages the weekly meal plan (dynamic positions) and their sides.
  * plan shape: { 'big-cook-1': { recipe, sides: [recipe, ...] }, ... }
  */
 export function useMealPlan(weekStart) {
@@ -34,7 +54,6 @@ export function useMealPlan(weekStart) {
     setLoading(true)
     setError(null)
 
-    // Fetch meals and sides in parallel
     const [mealsRes, sidesRes] = await Promise.all([
       supabase
         .from('meal_plans')
@@ -62,7 +81,6 @@ export function useMealPlan(weekStart) {
     setLoading(false)
   }
 
-  /** Assign a recipe to a position. */
   const setMeal = useCallback(async (position, recipeId) => {
     const { error } = await supabase
       .from('meal_plans')
@@ -81,7 +99,6 @@ export function useMealPlan(weekStart) {
     return error
   }, [weekStart])
 
-  /** Remove the main recipe from a position. */
   const clearMeal = useCallback(async (position) => {
     const { error } = await supabase
       .from('meal_plans')
@@ -97,7 +114,6 @@ export function useMealPlan(weekStart) {
     return error
   }, [weekStart])
 
-  /** Add a side to a meal position. */
   const addSide = useCallback(async (position, recipeId) => {
     const { error } = await supabase
       .from('meal_sides')
@@ -110,7 +126,6 @@ export function useMealPlan(weekStart) {
         .from('recipes').select('*').eq('id', recipeId).single()
       setPlan((prev) => {
         const current = prev[position] ?? { recipe: null, sides: [] }
-        // Avoid duplicates
         if (current.sides.some(s => s.id === recipeId)) return prev
         return {
           ...prev,
@@ -121,7 +136,6 @@ export function useMealPlan(weekStart) {
     return error
   }, [weekStart])
 
-  /** Remove a side from a meal position. */
   const removeSide = useCallback(async (position, recipeId) => {
     const { error } = await supabase
       .from('meal_sides')

@@ -1,8 +1,9 @@
-import { Star, Clock, Users } from 'lucide-react'
+import { Star, Clock, Users, UtensilsCrossed, Salad } from 'lucide-react'
 import ProteinBadge from './ProteinBadge'
 
 export default function RecipeCard({ recipe, onToggleStar, onClick, compact = false }) {
   const tags = recipe.tags ?? []
+  const isSide = tags.includes('side')
 
   function handleStarClick(e) {
     e.stopPropagation()
@@ -12,11 +13,27 @@ export default function RecipeCard({ recipe, onToggleStar, onClick, compact = fa
   return (
     <div
       onClick={() => onClick?.(recipe)}
-      className="bg-white rounded-xl border border-gray-100 shadow-sm p-4 cursor-pointer hover:shadow-md transition-shadow active:scale-[0.98] transition-transform"
+      className={`bg-white rounded-xl border shadow-sm p-4 cursor-pointer hover:shadow-md transition-shadow active:scale-[0.98] transition-transform ${
+        isSide ? 'border-teal-200' : 'border-gray-100'
+      }`}
     >
       <div className="flex items-start justify-between gap-2">
         <div className="flex-1 min-w-0">
-          <h3 className="font-semibold text-gray-900 leading-tight truncate">{recipe.name}</h3>
+          <div className="flex items-center gap-2">
+            {/* Meal/Side type badge */}
+            {isSide ? (
+              <span className="shrink-0 inline-flex items-center gap-1 px-2 py-0.5 bg-teal-50 text-teal-700 rounded-full text-[10px] font-semibold uppercase tracking-wide">
+                <Salad size={10} />
+                Side
+              </span>
+            ) : (
+              <span className="shrink-0 inline-flex items-center gap-1 px-2 py-0.5 bg-indigo-50 text-indigo-700 rounded-full text-[10px] font-semibold uppercase tracking-wide">
+                <UtensilsCrossed size={10} />
+                Meal
+              </span>
+            )}
+            <h3 className="font-semibold text-gray-900 leading-tight truncate">{recipe.name}</h3>
+          </div>
           {!compact && recipe.description && (
             <p className="text-sm text-gray-500 mt-0.5 line-clamp-2">{recipe.description}</p>
           )}
@@ -49,7 +66,7 @@ export default function RecipeCard({ recipe, onToggleStar, onClick, compact = fa
           </span>
         )}
         <ProteinBadge proteinG={recipe.protein_g} proteinRatio={recipe.protein_ratio} />
-        {tags.slice(0, 2).map((tag) => (
+        {tags.filter(t => !['side', 'big-cook', 'slow-cooker', 'no-cook'].includes(t)).slice(0, 2).map((tag) => (
           <span
             key={tag}
             className="px-2 py-0.5 bg-gray-100 text-gray-600 rounded-full text-xs"

@@ -1,25 +1,21 @@
 import { useState } from 'react'
-import { useSearchParams, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { ChevronLeft, ChevronRight, Plus, X, Clock } from 'lucide-react'
-import { useMealPlan, POSITIONS, MEAL_COLORS } from '../hooks/useMealPlan'
+import { useMealPlan, buildPositions, getColorForPosition } from '../hooks/useMealPlan'
+import { useMealConfig } from '../hooks/useMealConfig'
 import { useRecipes } from '../hooks/useRecipes'
-import { useWeekStartDay } from '../hooks/useWeekStartDay'
-import { getWeekStart, formatDate, addDays } from '../lib/dates'
+import { useWeekNav } from '../hooks/useWeekNav'
 import RecipePicker from '../components/RecipePicker'
 import LoadingSpinner from '../components/LoadingSpinner'
 
 export default function Sides() {
   const navigate = useNavigate()
   const [searchParams, setSearchParams] = useSearchParams()
-  const [picker, setPicker] = useState(null) // position key
-  const [startDay] = useWeekStartDay()
+  const [picker, setPicker] = useState(null)
+  const [config] = useMealConfig()
+  const { weekStart, weekNumber, prevWeek, nextWeek } = useWeekNav()
 
-  const weekParam = searchParams.get('week')
-  const weekStart = weekParam ?? formatDate(getWeekStart(new Date(), startDay))
-
-  function setWeek(date) {
-    setSearchParams({ week: formatDate(date) })
-  }
+  const positions = buildPositions(config)
 
   const { plan, loading, addSide, removeSide } = useMealPlan(weekStart)
   const { allRecipes } = useRecipes()
@@ -30,11 +26,7 @@ export default function Sides() {
     setPicker(null)
   }
 
-  const weekEnd = addDays(weekStart, 6)
-  const rangeLabel = `${formatDate(weekStart, 'MMM D')} – ${formatDate(weekEnd, 'MMM D')}`
-
-  // Only show positions that have a meal assigned
-  const filledPositions = POSITIONS.filter(pos => plan[pos.key]?.recipe)
+  const filledPositions = positions.filter(pos => plan[pos.key]?.recipe)
 
   return (
     <div className="min-h-screen bg-gray-50 pb-4">
@@ -45,11 +37,11 @@ export default function Sides() {
         </div>
 
         <div className="flex items-center justify-between px-4 pb-3">
-          <button onClick={() => setWeek(addDays(weekStart, -7))} className="p-2 rounded-xl hover:bg-gray-100">
+          <button onClick={prevWeek} className="p-2 rounded-xl hover:bg-gray-100">
             <ChevronLeft size={20} className="text-gray-600" />
           </button>
-          <span className="font-semibold text-gray-700 text-sm">{rangeLabel}</span>
-          <button onClick={() => setWeek(addDays(weekStart, 7))} className="p-2 rounded-xl hover:bg-gray-100">
+          <span className="font-semibold text-gray-700 text-sm">Week {weekNumber}</span>
+          <button onClick={nextWeek} className="p-2 rounded-xl hover:bg-gray-100">
             <ChevronRight size={20} className="text-gray-600" />
           </button>
         </div>
@@ -66,7 +58,7 @@ export default function Sides() {
         <div className="p-4 space-y-4">
           {filledPositions.map((pos) => {
             const slot = plan[pos.key] ?? { recipe: null, sides: [] }
-            const colors = MEAL_COLORS[pos.key]
+            const colors = getColorForPosition(positions, pos.key)
             const sides = slot.sides ?? []
 
             return (
@@ -111,7 +103,7 @@ export default function Sides() {
                   {/* Add side button */}
                   <button
                     onClick={() => setPicker(pos.key)}
-                    className={`w-full flex items-center gap-2 px-3 py-2.5 border-2 border-dashed rounded-lg text-sm font-medium transition-colors ${colors.border} ${colors.text} hover:${colors.bg}`}
+                    className={`w-full flex items-center gap-2 px-3 py-2.5 border-2 border-dashed rounded-lg text-sm font-medium transition-colors ${colors.border} ${colors.text}`}
                   >
                     <Plus size={14} />
                     Add side for {slot.recipe?.name ?? pos.label}
