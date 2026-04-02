@@ -11,6 +11,32 @@ export const SECTION_ORDER = [
   'Other',
 ]
 
+// Map shorthand section names to SECTION_ORDER values
+const SECTION_ALIASES = {
+  'meat': 'Meat & Seafood',
+  'seafood': 'Meat & Seafood',
+  'meat & seafood': 'Meat & Seafood',
+  'dairy': 'Dairy & Eggs',
+  'eggs': 'Dairy & Eggs',
+  'dairy & eggs': 'Dairy & Eggs',
+  'produce': 'Produce',
+  'pantry': 'Pantry',
+  'frozen': 'Frozen',
+  'bread': 'Bread',
+  'pasta': 'Pantry',
+  'grains': 'Pantry',
+  'canned': 'Pantry',
+  'spices': 'Pantry',
+  'condiments': 'Pantry',
+  'baking': 'Pantry',
+  'other': 'Other',
+}
+
+function normalizeSection(section) {
+  if (!section) return 'Other'
+  return SECTION_ALIASES[section.toLowerCase()] ?? section
+}
+
 function sectionIndex(section) {
   const i = SECTION_ORDER.indexOf(section)
   return i === -1 ? SECTION_ORDER.length : i
@@ -85,7 +111,7 @@ export function useShoppingList(weekStart) {
             name: ing.item,
             qty: parseFloat(ing.qty) || 0,
             unit: ing.unit ?? '',
-            section: ing.section ?? 'Other',
+            section: normalizeSection(ing.section),
             checked: false,
             custom: false,
           }

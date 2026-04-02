@@ -32,13 +32,20 @@ export default function Shopping() {
     setTimeout(() => setCopied(false), 2000)
   }
 
-  // Group items by section
+  // Group items by section — collect all unique sections
   const sections = {}
   for (const item of items) {
     const s = item.section || 'Other'
     if (!sections[s]) sections[s] = []
     sections[s].push(item)
   }
+  // Build ordered list: known sections first, then any extras alphabetically
+  const allSections = [
+    ...SECTION_ORDER.filter((s) => sections[s]?.length > 0),
+    ...Object.keys(sections)
+      .filter((s) => !SECTION_ORDER.includes(s))
+      .sort(),
+  ]
 
   const checkedCount = items.filter((i) => i.checked).length
   const totalCount = items.length
@@ -113,7 +120,7 @@ export default function Shopping() {
         </div>
       ) : (
         <div className="px-4 pt-4 space-y-6">
-          {SECTION_ORDER.filter((s) => sections[s]?.length > 0).map((section) => (
+          {allSections.map((section) => (
             <div key={section}>
               <h2 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2 px-1">
                 {section}
@@ -159,27 +166,6 @@ export default function Shopping() {
               </div>
             </div>
           ))}
-
-          {/* Custom items in Other not covered by SECTION_ORDER */}
-          {sections['Other'] === undefined &&
-            items.filter((i) => !SECTION_ORDER.includes(i.section)).length > 0 && (
-            <div>
-              <h2 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2 px-1">Other</h2>
-              <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
-                {items
-                  .filter((i) => !SECTION_ORDER.includes(i.section))
-                  .map((item, idx) => (
-                    <div key={item.id} className={`flex items-center gap-3 px-4 py-3 ${idx > 0 ? 'border-t border-gray-50' : ''}`}>
-                      <button onClick={() => toggleItem(item.id)} className={`shrink-0 w-5 h-5 rounded-full border-2 flex items-center justify-center ${item.checked ? 'bg-emerald-500 border-emerald-500' : 'border-gray-300'}`}>
-                        {item.checked && <Check size={11} className="text-white" strokeWidth={3} />}
-                      </button>
-                      <span className={`flex-1 text-sm text-gray-800 ${item.checked ? 'line-through' : ''}`}>{item.name}</span>
-                      <button onClick={() => removeItem(item.id)} className="p-1 hover:text-red-500 text-gray-300"><Trash2 size={14} /></button>
-                    </div>
-                  ))}
-              </div>
-            </div>
-          )}
         </div>
       )}
 
