@@ -23,23 +23,32 @@ CREATE TABLE IF NOT EXISTS recipes (
   ingredients jsonb NOT NULL DEFAULT '[]',
   -- steps: ordered array of instruction strings
   steps text[] NOT NULL DEFAULT '{}',
-  -- tags: e.g. ["kid-friendly","high-protein","quick","meal-prep"]
+  -- tags: e.g. ["kid-friendly","high-protein","big-cook","slow-cooker","no-cook","side"]
   tags text[] NOT NULL DEFAULT '{}',
   image_url text,
   starred boolean NOT NULL DEFAULT false,
   created_at timestamptz NOT NULL DEFAULT now()
 );
 
--- Meal plans table — one row per day/slot per week
+-- Meal plans table — one row per position per week
+-- Positions: big-cook-1, big-cook-2, slow-cooker, no-cook
 CREATE TABLE IF NOT EXISTS meal_plans (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   week_start date NOT NULL,
-  day text NOT NULL CHECK (day IN ('monday','tuesday','wednesday','thursday','friday','saturday','sunday')),
-  slot text NOT NULL CHECK (slot IN ('dinner','lunch')),
+  position text NOT NULL CHECK (position IN ('big-cook-1','big-cook-2','slow-cooker','no-cook')),
   recipe_id uuid REFERENCES recipes(id) ON DELETE SET NULL,
-  side_id uuid REFERENCES recipes(id) ON DELETE SET NULL, -- Added: support for veggie side dishes
   created_at timestamptz NOT NULL DEFAULT now(),
-  UNIQUE(week_start, day, slot)
+  UNIQUE(week_start, position)
+);
+
+-- Meal sides table — sides linked to a meal position for a week
+CREATE TABLE IF NOT EXISTS meal_sides (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  week_start date NOT NULL,
+  position text NOT NULL CHECK (position IN ('big-cook-1','big-cook-2','slow-cooker','no-cook')),
+  recipe_id uuid NOT NULL REFERENCES recipes(id) ON DELETE CASCADE,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  UNIQUE(week_start, position, recipe_id)
 );
 
 -- Shopping lists table — one row per week, items stored as JSON
@@ -55,8 +64,10 @@ CREATE TABLE IF NOT EXISTS shopping_lists (
 -- Enable RLS (Row Level Security) — open policies for now, tighten for multi-user
 ALTER TABLE recipes ENABLE ROW LEVEL SECURITY;
 ALTER TABLE meal_plans ENABLE ROW LEVEL SECURITY;
+ALTER TABLE meal_sides ENABLE ROW LEVEL SECURITY;
 ALTER TABLE shopping_lists ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "Allow all on recipes" ON recipes FOR ALL USING (true) WITH CHECK (true);
 CREATE POLICY "Allow all on meal_plans" ON meal_plans FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Allow all on meal_sides" ON meal_sides FOR ALL USING (true) WITH CHECK (true);
 CREATE POLICY "Allow all on shopping_lists" ON shopping_lists FOR ALL USING (true) WITH CHECK (true);

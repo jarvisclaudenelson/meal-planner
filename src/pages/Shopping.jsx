@@ -98,7 +98,7 @@ export default function Shopping() {
             className="flex-1 flex items-center justify-center gap-2 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold rounded-xl transition-colors disabled:opacity-60"
           >
             <RefreshCw size={15} className={generating ? 'animate-spin' : ''} />
-            {generating ? 'Generating…' : 'Generate from Plan'}
+            {generating ? 'Generating…' : 'Generate from Meals'}
           </button>
           <button
             onClick={handleExport}
@@ -128,7 +128,7 @@ export default function Shopping() {
           <ShoppingBagIcon />
           <p className="text-lg font-medium mt-3">Your list is empty</p>
           <p className="text-sm mt-1">
-            Add meals to your plan for this week, then tap "Generate from Plan" to auto-build your
+            Pick your meals and sides for this week, then tap "Generate from Meals" to auto-build your
             shopping list.
           </p>
         </div>

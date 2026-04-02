@@ -18,7 +18,7 @@ function sectionIndex(section) {
 
 /**
  * Shopping list for a given week.
- * items shape: [{ id, name, qty, unit, section, checked, custom }]
+ * plan shape: { 'big-cook-1': { recipe, sides: [...] }, ... }
  */
 export function useShoppingList(weekStart, plan) {
   const [items, setItems] = useState([])
@@ -51,13 +51,15 @@ export function useShoppingList(weekStart, plan) {
 
   /** Generate list from current week's meal plan. Merges ingredients by item+unit key. */
   const generateList = useCallback(async () => {
-    // Plan values are now { main: recipeObj, side: recipeObj }
-    const planItems = Object.values(plan ?? {}).filter(Boolean)
     const recipes = []
-    
-    for (const item of planItems) {
-      if (item.main) recipes.push(item.main)
-      if (item.side) recipes.push(item.side)
+
+    for (const slot of Object.values(plan ?? {})) {
+      if (slot?.recipe) recipes.push(slot.recipe)
+      if (slot?.sides) {
+        for (const side of slot.sides) {
+          if (side) recipes.push(side)
+        }
+      }
     }
 
     const consolidated = {}
