@@ -31,11 +31,11 @@ CREATE TABLE IF NOT EXISTS recipes (
 );
 
 -- Meal plans table — one row per position per week
--- Positions: big-cook-1, big-cook-2, slow-cooker-1 (shared seasonal appliance slot), no-cook-1
+-- Positions: big-cook-1, big-cook-2, slow-cooker-1, griddle-1, no-cook-1
 CREATE TABLE IF NOT EXISTS meal_plans (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   week_start date NOT NULL,
-  position text NOT NULL CHECK (position ~ '^(big-cook|slow-cooker|no-cook)-\d+$'),
+  position text NOT NULL CHECK (position ~ '^(big-cook|slow-cooker|griddle|no-cook)-\d+$'),
   recipe_id uuid REFERENCES recipes(id) ON DELETE SET NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   UNIQUE(week_start, position)
@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS meal_plans (
 CREATE TABLE IF NOT EXISTS meal_sides (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   week_start date NOT NULL,
-  position text NOT NULL CHECK (position ~ '^(big-cook|slow-cooker|no-cook)-\d+$'),
+  position text NOT NULL CHECK (position ~ '^(big-cook|slow-cooker|griddle|no-cook)-\d+$'),
   recipe_id uuid NOT NULL REFERENCES recipes(id) ON DELETE CASCADE,
   created_at timestamptz NOT NULL DEFAULT now(),
   UNIQUE(week_start, position, recipe_id)

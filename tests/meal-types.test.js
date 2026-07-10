@@ -9,81 +9,43 @@ import {
   normalizeMealConfig,
 } from '../src/lib/mealTypes.js'
 
-test('uses a griddle appliance slot instead of slow cooker during summer', () => {
-  const config = getDefaultMealConfig(new Date(2026, 6, 10))
-
-  assert.deepEqual(config, {
+test('keeps both appliance categories available with the same defaults all year', () => {
+  const expected = {
     'big-cook': 2,
-    'slow-cooker': 0,
-    griddle: 1,
+    'slow-cooker': 1,
+    griddle: 0,
     'no-cook': 1,
+  }
+
+  assert.deepEqual(getDefaultMealConfig(new Date(2026, 0, 10)), expected)
+  assert.deepEqual(getDefaultMealConfig(new Date(2026, 6, 10)), expected)
+})
+
+test('adds griddle to legacy settings without changing the slow-cooker count', () => {
+  const saved = { 'big-cook': 2, 'slow-cooker': 3, 'no-cook': 1 }
+  const expected = { ...saved, griddle: 0 }
+
+  assert.deepEqual(normalizeMealConfig(saved, new Date(2026, 0, 10)), expected)
+  assert.deepEqual(normalizeMealConfig(saved, new Date(2026, 6, 10)), expected)
+})
+
+test('allows slow-cooker and griddle counts to be enabled together', () => {
+  const updated = applyMealConfigUpdates(getDefaultMealConfig(), {
+    'slow-cooker': 1,
+    griddle: 2,
   })
-})
-
-test('uses a slow-cooker appliance slot outside summer', () => {
-  const config = getDefaultMealConfig(new Date(2026, 0, 10))
-
-  assert.equal(config['slow-cooker'], 1)
-  assert.equal(config.griddle, 0)
-})
-
-test('migrates the legacy slow-cooker slot to griddle during summer', () => {
-  const config = normalizeMealConfig(
-    { 'big-cook': 2, 'slow-cooker': 1, 'no-cook': 1 },
-    new Date(2026, 6, 10),
-  )
-
-  assert.equal(config['slow-cooker'], 0)
-  assert.equal(config.griddle, 1)
-})
-
-test('preserves a custom legacy appliance count when migrating to griddle', () => {
-  const config = normalizeMealConfig(
-    { 'big-cook': 2, 'slow-cooker': 3, 'no-cook': 1 },
-    new Date(2026, 6, 10),
-  )
-
-  assert.equal(config['slow-cooker'], 0)
-  assert.equal(config.griddle, 3)
-})
-
-test('preserves a disabled legacy appliance slot during summer migration', () => {
-  const config = normalizeMealConfig(
-    { 'big-cook': 2, 'slow-cooker': 0, 'no-cook': 1 },
-    new Date(2026, 6, 10),
-  )
-
-  assert.equal(config['slow-cooker'], 0)
-  assert.equal(config.griddle, 0)
-})
-
-test('uses June through August as the summer boundary', () => {
-  assert.equal(getDefaultMealConfig(new Date(2026, 4, 31)).griddle, 0)
-  assert.equal(getDefaultMealConfig(new Date(2026, 5, 1)).griddle, 1)
-  assert.equal(getDefaultMealConfig(new Date(2026, 7, 31)).griddle, 1)
-  assert.equal(getDefaultMealConfig(new Date(2026, 8, 1)).griddle, 0)
-})
-
-test('migrates a summer griddle count back to slow cooker outside summer', () => {
-  const config = normalizeMealConfig(
-    { 'big-cook': 2, 'slow-cooker': 0, griddle: 3, 'no-cook': 1 },
-    new Date(2026, 0, 10),
-  )
-
-  assert.equal(config['slow-cooker'], 3)
-  assert.equal(config.griddle, 0)
-})
-
-test('keeps slow-cooker and griddle counts mutually exclusive', () => {
-  const summerConfig = getDefaultMealConfig(new Date(2026, 6, 10))
-  const updated = applyMealConfigUpdates(summerConfig, { 'slow-cooker': 1 })
 
   assert.equal(updated['slow-cooker'], 1)
-  assert.equal(updated.griddle, 0)
+  assert.equal(updated.griddle, 2)
 })
 
-test('builds a griddle recipe slot using the existing appliance storage position', () => {
-  const config = getDefaultMealConfig(new Date(2026, 6, 10))
+test('builds distinct stored positions for slow cooker and griddle', () => {
+  const config = {
+    'big-cook': 2,
+    'slow-cooker': 1,
+    griddle: 1,
+    'no-cook': 1,
+  }
   const positions = buildPositions(config)
 
   assert.deepEqual(
@@ -91,7 +53,8 @@ test('builds a griddle recipe slot using the existing appliance storage position
     [
       { key: 'big-cook-1', type: 'big-cook', label: 'Big Cook' },
       { key: 'big-cook-2', type: 'big-cook', label: 'Big Cook' },
-      { key: 'slow-cooker-1', type: 'griddle', label: 'Griddle' },
+      { key: 'slow-cooker-1', type: 'slow-cooker', label: 'Slow Cooker' },
+      { key: 'griddle-1', type: 'griddle', label: 'Griddle' },
       { key: 'no-cook-1', type: 'no-cook', label: 'No Cook / Assemble' },
     ],
   )

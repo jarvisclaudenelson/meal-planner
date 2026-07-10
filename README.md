@@ -128,7 +128,7 @@ Each ingredient should follow the shape:
 
 Valid sections: `Produce`, `Meat & Seafood`, `Dairy & Eggs`, `Pantry`, `Frozen`, `Bread`, `Other`
 
-Griddle recipes use the `griddle` tag. During June–August, the default weekly appliance slot automatically changes from **Slow Cooker** to **Griddle**; outside summer it changes back. The two categories remain mutually exclusive in weekly settings.
+Griddle recipes use the `griddle` tag. **Griddle** and **Slow Cooker** are separate weekly options all year. Each can be enabled, disabled, or used alongside the other in weekly settings.
 
 To add or refresh the starter griddle collection:
 
