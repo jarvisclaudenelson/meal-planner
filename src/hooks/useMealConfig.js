@@ -1,15 +1,15 @@
 import { useState, useCallback } from 'react'
+import { applyMealConfigUpdates, getDefaultMealConfig, normalizeMealConfig } from '../lib/mealTypes'
 
 const STORAGE_KEY = 'plaited-meal-config'
-const DEFAULT_CONFIG = { 'big-cook': 2, 'slow-cooker': 1, 'no-cook': 1 }
 
 function load() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
-    if (!raw) return DEFAULT_CONFIG
-    return { ...DEFAULT_CONFIG, ...JSON.parse(raw) }
+    if (!raw) return getDefaultMealConfig()
+    return normalizeMealConfig(JSON.parse(raw))
   } catch {
-    return DEFAULT_CONFIG
+    return getDefaultMealConfig()
   }
 }
 
@@ -18,7 +18,7 @@ export function useMealConfig() {
 
   const setConfig = useCallback((updates) => {
     setConfigState((prev) => {
-      const next = { ...prev, ...updates }
+      const next = applyMealConfigUpdates(prev, updates)
       localStorage.setItem(STORAGE_KEY, JSON.stringify(next))
       return next
     })

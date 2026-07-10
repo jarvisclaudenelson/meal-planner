@@ -66,7 +66,7 @@ export default function RecipeCard({ recipe, onToggleStar, onClick, compact = fa
           </span>
         )}
         <ProteinBadge proteinG={recipe.protein_g} proteinRatio={recipe.protein_ratio} />
-        {tags.filter(t => !['side', 'big-cook', 'slow-cooker', 'no-cook'].includes(t)).slice(0, 2).map((tag) => (
+        {tags.filter(t => !['side', 'big-cook', 'slow-cooker', 'griddle', 'no-cook'].includes(t)).slice(0, 2).map((tag) => (
           <span
             key={tag}
             className="px-2 py-0.5 bg-gray-700 text-gray-300 rounded-full text-xs"

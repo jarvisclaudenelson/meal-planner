@@ -1,23 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { supabase } from '../lib/supabase'
-
-export const MEAL_TYPES = [
-  { type: 'big-cook', label: 'Big Cook' },
-  { type: 'slow-cooker', label: 'Slow Cooker' },
-  { type: 'no-cook', label: 'No Cook / Assemble' },
-]
-
-/** Build positions array from config like { 'big-cook': 2, 'slow-cooker': 1, 'no-cook': 1 } */
-export function buildPositions(config) {
-  const positions = []
-  for (const { type, label } of MEAL_TYPES) {
-    const count = config[type] ?? 0
-    for (let i = 1; i <= count; i++) {
-      positions.push({ key: `${type}-${i}`, label, type })
-    }
-  }
-  return positions
-}
+export { MEAL_TYPES, buildPositions } from '../lib/mealTypes'
 
 // Color palette — assigned per position index, stable within a config
 const COLOR_PALETTE = [

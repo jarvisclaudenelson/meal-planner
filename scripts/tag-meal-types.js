@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Tag existing recipes with meal types: big-cook, slow-cooker, no-cook.
+ * Tag existing recipes with meal types: big-cook, slow-cooker, griddle, no-cook.
  *
  * Logic:
  * - If cook_time_min >= 240 (4+ hours) or name/tags contain "slow cooker" → slow-cooker
@@ -21,7 +21,7 @@ async function main() {
   const { data: recipes, error } = await supabase.from('recipes').select('id, name, tags, prep_time_min, cook_time_min')
   if (error) { console.error(error); process.exit(1) }
 
-  const mealTypes = ['big-cook', 'slow-cooker', 'no-cook']
+  const mealTypes = ['big-cook', 'slow-cooker', 'griddle', 'no-cook']
   let updated = 0
 
   for (const r of recipes) {

@@ -15,6 +15,7 @@ export function useRecipes() {
     sidesOnly: false,    // only sides
     bigCook: false,      // has 'big-cook' tag
     slowCooker: false,   // has 'slow-cooker' tag
+    griddle: false,      // has 'griddle' tag
     noCook: false,       // has 'no-cook' tag
   })
   const [sort, setSort] = useState('name') // 'name' | 'protein' | 'time'
@@ -49,6 +50,7 @@ export function useRecipes() {
       if (filters.sidesOnly && !r.tags?.includes('side')) return false
       if (filters.bigCook && !r.tags?.includes('big-cook')) return false
       if (filters.slowCooker && !r.tags?.includes('slow-cooker')) return false
+      if (filters.griddle && !r.tags?.includes('griddle')) return false
       if (filters.noCook && !r.tags?.includes('no-cook')) return false
       return true
     })

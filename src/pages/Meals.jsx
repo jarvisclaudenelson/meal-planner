@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ChevronLeft, ChevronRight, RefreshCw, Flame, Timer, Salad, X, Clock, Settings, Plus, Minus } from 'lucide-react'
+import { ChevronLeft, ChevronRight, RefreshCw, Flame, Timer, Salad, Grid2X2, X, Clock, Settings, Plus, Minus } from 'lucide-react'
 import { useMealPlan, MEAL_TYPES, buildPositions, getColorForPosition } from '../hooks/useMealPlan'
 import { useMealConfig } from '../hooks/useMealConfig'
 import { useRecipes } from '../hooks/useRecipes'
@@ -11,6 +11,7 @@ import LoadingSpinner from '../components/LoadingSpinner'
 const TYPE_ICONS = {
   'big-cook': Flame,
   'slow-cooker': Timer,
+  griddle: Grid2X2,
   'no-cook': Salad,
 }
 

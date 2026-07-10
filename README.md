@@ -58,7 +58,7 @@ Open [http://localhost:5173](http://localhost:5173) in your browser (or add it t
 |-----|-------------|
 | **Today** | Shows today's dinner & lunch. Calculates "start cooking by" time based on your target dinner time. |
 | **Plan** | Weekly view (Mon–Sun). Tap a slot to assign a recipe; tap a filled slot to view it; clear with ✕. Navigate weeks with arrows. |
-| **Recipes** | Browse, search, filter (Starred / Quick / High Protein / Kid-Friendly), and sort. Tap to view full recipe. |
+| **Recipes** | Browse, search, filter (including Big Cook / Slow Cooker / Griddle / No Cook), and sort. Tap to view full recipe. |
 | **Recipe Detail** | Full ingredients + steps + nutrition. Cooking Mode shows one step at a time with wake lock. Low-protein recipes show protein-boost tips. |
 | **Shopping** | Auto-generate from the week's plan. Items grouped by store section. Check off items, add custom items, export as plain text to clipboard. |
 
@@ -127,6 +127,14 @@ Each ingredient should follow the shape:
 ```
 
 Valid sections: `Produce`, `Meat & Seafood`, `Dairy & Eggs`, `Pantry`, `Frozen`, `Bread`, `Other`
+
+Griddle recipes use the `griddle` tag. During June–August, the default weekly appliance slot automatically changes from **Slow Cooker** to **Griddle**; outside summer it changes back. The two categories remain mutually exclusive in weekly settings.
+
+To add or refresh the starter griddle collection:
+
+```bash
+npm run seed:griddle
+```
 
 ---
 

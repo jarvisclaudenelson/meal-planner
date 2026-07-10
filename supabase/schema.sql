@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS recipes (
   ingredients jsonb NOT NULL DEFAULT '[]',
   -- steps: ordered array of instruction strings
   steps text[] NOT NULL DEFAULT '{}',
-  -- tags: e.g. ["kid-friendly","high-protein","big-cook","slow-cooker","no-cook","side"]
+  -- tags: e.g. ["kid-friendly","high-protein","big-cook","slow-cooker","griddle","no-cook","side"]
   tags text[] NOT NULL DEFAULT '{}',
   image_url text,
   starred boolean NOT NULL DEFAULT false,
@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS recipes (
 );
 
 -- Meal plans table — one row per position per week
--- Positions: big-cook-1, big-cook-2, slow-cooker, no-cook
+-- Positions: big-cook-1, big-cook-2, slow-cooker-1 (shared seasonal appliance slot), no-cook-1
 CREATE TABLE IF NOT EXISTS meal_plans (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   week_start date NOT NULL,

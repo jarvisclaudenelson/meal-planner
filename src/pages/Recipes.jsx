@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom'
-import { Search, Star, Zap, Dumbbell, Baby, ArrowUpDown, UtensilsCrossed, Salad, Flame, Timer, Leaf } from 'lucide-react'
+import { Search, Star, Zap, Dumbbell, Baby, ArrowUpDown, UtensilsCrossed, Salad, Flame, Timer, Grid2X2, Leaf } from 'lucide-react'
 import { useRecipes } from '../hooks/useRecipes'
 import RecipeCard from '../components/RecipeCard'
 import LoadingSpinner from '../components/LoadingSpinner'
@@ -9,6 +9,7 @@ const FILTER_CHIPS = [
   { key: 'sidesOnly', label: 'Sides', icon: Salad },
   { key: 'bigCook', label: 'Big Cook', icon: Flame },
   { key: 'slowCooker', label: 'Slow Cooker', icon: Timer },
+  { key: 'griddle', label: 'Griddle', icon: Grid2X2 },
   { key: 'noCook', label: 'No Cook', icon: Leaf },
   { key: 'starred', label: 'Starred', icon: Star },
   { key: 'quickOnly', label: 'Quick (<30 min)', icon: Zap },
@@ -37,7 +38,7 @@ export default function Recipes() {
     toggleStar,
   } = useRecipes()
 
-  const TYPE_KEYS = ['mealsOnly', 'sidesOnly', 'bigCook', 'slowCooker', 'noCook']
+  const TYPE_KEYS = ['mealsOnly', 'sidesOnly', 'bigCook', 'slowCooker', 'griddle', 'noCook']
 
   function toggleFilter(key) {
     setFilters((prev) => {
