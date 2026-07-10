@@ -9,24 +9,36 @@ import {
   normalizeMealConfig,
 } from '../src/lib/mealTypes.js'
 
-test('keeps both appliance categories available with the same defaults all year', () => {
+test('shows both appliance slots by default all year', () => {
   const expected = {
     'big-cook': 2,
     'slow-cooker': 1,
-    griddle: 0,
+    griddle: 1,
     'no-cook': 1,
+    version: 2,
   }
 
   assert.deepEqual(getDefaultMealConfig(new Date(2026, 0, 10)), expected)
   assert.deepEqual(getDefaultMealConfig(new Date(2026, 6, 10)), expected)
 })
 
-test('adds griddle to legacy settings without changing the slow-cooker count', () => {
-  const saved = { 'big-cook': 2, 'slow-cooker': 3, 'no-cook': 1 }
-  const expected = { ...saved, griddle: 0 }
+test('migrates old saved settings so both appliance slots are visible', () => {
+  const saved = { 'big-cook': 2, 'slow-cooker': 1, griddle: 0, 'no-cook': 1 }
+  const expected = { ...saved, griddle: 1, version: 2 }
 
-  assert.deepEqual(normalizeMealConfig(saved, new Date(2026, 0, 10)), expected)
-  assert.deepEqual(normalizeMealConfig(saved, new Date(2026, 6, 10)), expected)
+  assert.deepEqual(normalizeMealConfig(saved), expected)
+})
+
+test('preserves deliberately hidden slots after the settings migration', () => {
+  const saved = {
+    'big-cook': 2,
+    'slow-cooker': 1,
+    griddle: 0,
+    'no-cook': 1,
+    version: 2,
+  }
+
+  assert.deepEqual(normalizeMealConfig(saved), saved)
 })
 
 test('allows slow-cooker and griddle counts to be enabled together', () => {

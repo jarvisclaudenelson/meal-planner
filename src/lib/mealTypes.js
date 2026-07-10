@@ -6,13 +6,15 @@ export const MEAL_TYPES = [
 ]
 
 const MAX_MEALS_PER_TYPE = 5
+export const MEAL_CONFIG_VERSION = 2
 
 export function getDefaultMealConfig() {
   return {
     'big-cook': 2,
     'slow-cooker': 1,
-    griddle: 0,
+    griddle: 1,
     'no-cook': 1,
+    version: MEAL_CONFIG_VERSION,
   }
 }
 
@@ -32,6 +34,15 @@ export function normalizeMealConfig(savedConfig) {
       config[type] = normalizeCount(savedConfig[type])
     }
   }
+
+  // Version 1 could hide one appliance slot. Upgrade once so both are visible;
+  // version 2 settings still respect a deliberate zero count.
+  const savedVersion = Number(savedConfig.version)
+  if (!Number.isFinite(savedVersion) || savedVersion < MEAL_CONFIG_VERSION) {
+    config['slow-cooker'] = Math.max(1, config['slow-cooker'])
+    config.griddle = Math.max(1, config.griddle)
+  }
+  config.version = MEAL_CONFIG_VERSION
 
   return config
 }
